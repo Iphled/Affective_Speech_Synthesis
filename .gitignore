@@ -3,6 +3,12 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# Tex
+*.synctex.gz
+Verteidigung/*.pdf
+Verteidigung/*.out
+Verteidigung/*.log
+*.aux
 # C extensions
 *.so
 

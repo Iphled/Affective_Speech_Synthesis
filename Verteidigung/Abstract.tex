@@ -1,0 +1,150 @@
+	\documentclass[12pt]{article}
+
+\title{Affective Speech Synthesis \\ \large{Planned contents}}
+\author{Julia Rennert}
+\usepackage{layout}    %  um die Seitenränder als Bild auszugeben
+\usepackage{geometry}
+\usepackage{tabulary}
+\usepackage{longtable}
+\usepackage{multirow}
+\usepackage{float}
+\usepackage{hyperref}
+\usepackage[table]{xcolor}
+\usepackage{caption}
+\usepackage{graphicx}
+\usepackage[colorinlistoftodos]{todonotes}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{paralist}
+\usepackage{geometry}
+\usepackage{setspace}
+\usepackage{wrapfig}
+\usepackage{array}
+\usepackage{CJKutf8}
+\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
+\newcolumntype{s}[1]{>{\columncolor[HTML]{fafafa}} p{#1}}
+\geometry{
+   left=2cm,
+   textwidth=17.5cm,
+   marginpar=3cm}
+   
+\usepackage{listings}
+\usepackage{color}
+\definecolor{lightgray}{gray}{0.9}
+\definecolor{nearwhite}{gray}{0.96}
+
+\definecolor{codegreen}{rgb}{0.4,0.98,0.3}
+\definecolor{lightgreen}{rgb}{0.8,0.98,0.6}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+\usepackage{float}
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                                    
+    keepspaces=true,                   
+    %numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2,
+    columns=fixed
+}
+
+
+
+\lstset{style=mystyle}
+
+
+\lstset{
+    showstringspaces=false,
+    basicstyle=\ttfamily,
+    keywordstyle=\color{blue},
+    commentstyle=\color[grey]{0.6},
+    stringstyle=\color[RGB]{255,150,75}
+}
+
+\makeatletter
+\newcommand{\thickhline}{%
+    \noalign {\ifnum 0=`}\fi \hrule height 1.2pt
+    \futurelet \reserved@a \@xhline
+}
+
+\newcommand{\thickcline}[1]{%
+    \@thickcline #1\@nil%
+}
+
+\def\@thickcline#1-#2\@nil{%
+  \omit
+  \@multicnt#1%
+  \advance\@multispan\m@ne
+  \ifnum\@multicnt=\@ne\@firstofone{&\omit}\fi
+  \@multicnt#2%
+  \advance\@multicnt-#1%
+  \advance\@multispan\@ne
+  \leaders\hrule\@height1.2pt\hfill
+  \cr
+  \noalign{\vskip-1.2pt}%
+}
+
+\makeatother
+
+\newcommand{\coursetable}[5]{
+\begin{table}[H]
+\centering
+\begin{tabular}{|p{.3\textwidth} p{.3\textwidth}|}
+\hline 
+\rowcolor{codegreen} \textbf{ Course Name: } & \textbf{#1}\\ 
+\hline 
+\rowcolor{lightgreen} Credits: & #2 \\ 
+\rowcolor{lightgreen} Language: & #3 \\ 
+\rowcolor{lightgreen} Exam Task: & #4 \\ 
+\rowcolor{lightgreen} Exam Mark: & #5/100 \\ 
+\hline 
+\end{tabular} 
+\end{table}
+}
+   
+\begin{document}
+\maketitle
+
+\section{Introduction}
+Speech synthesis has evolved from a difficult problem to a common tool over the past few decades. It started with simulating mouth movements, then moved on to rule-based, concatenative and statistical synthesis, and then to using deep learning. Today, synthesized speech is used in a variety of applications, such as voice assistants and video dubbing.
+
+While general speech synthesis has already made good progress, work is still being done on how to give language a specific characteristic. To define this problem, the information content of the spoken word is divided into three areas. First, there is the content of the text, more or less a transcript of what is being said. Then there is the emotion that the speaker conveys through his voice. And thirdly, there is the identity of the speaker himself, which is also characterized by his voice. Affective Speech Synthesis refers to the change in emotion while the other two areas remain the static.
+
+\section{Task}
+The proposed task of this work is to annotate single sentences with the emotion corresponding to its contents, transforming the text into speech with a common TTS tool and deform the voice in a manner that conveys the emotion.
+
+\section{Data}
+\begin{itemize}
+\item Emotion-bearing sentences for BERT: Saravia et al.: CARER: Contextualized Affect Representations for Emotion Recognition, EMNLP 2018. 
+\item Emotional speech audio: Saravia et al.: CREMA-D (Crowd-sourced Emotional Multimodal Actors Dataset)
+\end{itemize}
+\section{Approach}
+
+The method we propose can be categorized into three steps:
+\begin{enumerate}
+\item Extract emotion from sentences via BERT or a similar pre-trained decoder
+\item Transform the text into speech, possibly via Google text-to-speech
+\item Deform the audio output to match the found emotion.
+\end{enumerate}
+
+The last step is the only step that needs further explanation, because it warrants the training of a model. The basic idea is to take a sentence that is available both in a neutral tone and in a emotional tone. Both of them are transferred into three functions: One represents the change in loudness in comparison of the emotional speech in comparison to the neutral speech, the next corresponds to the change of pace and the last one to the change of pitch. Then a model is trained on those functions with the neutral curve and the emotion label as input and the emotion curve as an output.
+
+With those three components, it should be possible to transform a simple text input into a emotion-laden speech.
+\section{Evaluation}
+The two sub-problems can be evaluated by holding back a testing set of the original data. The Roberta model can be evaluated directly with a testing set.
+
+To evaluate the extraction of the formulas from the audios is harder to control. Again, a testing set can and will be used, but because the input has more data points, the method is rudimentary and the data set is smaller, a worse outcome is to be expected.
+
+As for the final sentences, an effective evaluation would have to be a survey conducted with a high variety of people with different age, educational background, gender and ethnic. As this effort does not scale with the credits of the course, I would make an example-based evaluation instead.
+The examples should also cover edge cases like especially long sentences and ellipsis sentences.
+
+\end{document}
