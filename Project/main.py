@@ -1,5 +1,7 @@
 import tkinter as tk
+from fileinput import filename
 from tkinter import ttk
+from tkinter import filedialog
 import os
 from playsound import playsound
 # from skimage.morphology.misc import funcs
@@ -9,21 +11,32 @@ from Project.Text_to_speech import text_to_speech
 
 emotion = "neutral"
 emotion_values = ("Neutral", "Joy", "Sadness", "Anger", "Fear")
-
+audio=None
 
 def synthesize():
+    global audio
     text = textvar.get()
     emotion = combobox.get()
     audio = text_to_speech(text)
-    play_audio(audio)
+    play_audio()
     pass
 
 
-def play_audio(audio):
-    filename = 'audio_tmp' + '.mp3'
-    audio.save(filename)
-    playsound(filename)
-    os.remove(filename)
+def play_audio():
+    global audio
+    print(audio)
+    if audio is not None:
+        filename = 'audio_tmp' + '.mp3'
+        audio.save(filename)
+        playsound(filename)
+        os.remove(filename)
+
+def savetofile():
+    global audio
+    print(audio)
+    if audio is not None:
+        f = filedialog.asksaveasfilename(initialdir = "/",title = "Select file",filetypes = (("mp3 files","*.mp3"),("all files","*.*")))
+        audio.save(f)
 
 
 def find_emotion():
@@ -59,4 +72,7 @@ if __name__ == "__main__":
 
     button = tk.Button(root, text="Synthesize", command=synthesize)
     button.pack()
+
+    savebutton = tk.Button(root, text="SavetoFile", command=savetofile)
+    savebutton.pack()
     root.mainloop()
