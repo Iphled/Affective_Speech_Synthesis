@@ -1,6 +1,9 @@
-#Enthält das nicht-emotionale TTS
-#Eingabe: Ein Satz
-#Ausgabe: Das dazugehörige Audio
+# Enthält das nicht-emotionale TTS
+# Eingabe: Ein Satz
+# Ausgabe: Das dazugehörige Audio
+from gtts import gTTS
+
 
 def text_to_speech(text):
-    return None
+    audio = gTTS(text=text, lang='en')
+    return audio
