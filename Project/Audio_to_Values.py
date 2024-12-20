@@ -8,9 +8,16 @@ import matplotlib.pyplot as plt
 import librosa
 import numpy as np
 
+def mp3_wav(path):
+    sound = AudioSegment.from_mp3(path)
+    path=path.replace("mp3","wav")
+    sound.export(path, format="wav")
+    return path
+
 def audio_to_pitch_over_time(path):
     if path.endswith('.mp3'):
-        mp3_wav(path)
+        path=mp3_wav(path)
+        print(path)
     y, sr = librosa.load(path)
     chromagram_stft = librosa.feature.chroma_stft(y=y, sr=sr)
     l = list()
@@ -26,7 +33,8 @@ def audio_to_pitch_over_time(path):
 
 def audio_to_volume_over_time(path):
     if path.endswith('.mp3'):
-        mp3_wav(path)
+        path=mp3_wav(path)
+        print(path)
     rate, data = read(path)
     length = data.shape[0] / rate
     time = np.linspace(0., length, data.shape[0])
@@ -38,7 +46,3 @@ def audio_to_volume_over_time(path):
             values.append(data[i][1])
 
     return values, time
-
-def mp3_wav(path):
-    sound = AudioSegment.from_mp3(path)
-    sound.export(path.replace(".mp3",".wav"), format="wav")
