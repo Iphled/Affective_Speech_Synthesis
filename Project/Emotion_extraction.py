@@ -2,8 +2,18 @@
 # Eingabe: Ein Satz
 # Ausgabe: Eine Emotion von
 
+from transformers import pipeline
+import pandas as pd
+
 def extract_from_text(text):
-    return "neutral"
+    model = pipeline("text-classification", model="j-hartmann/emotion-english-distilroberta-base")
+    df=pd.DataFrame.from_dict({'text':[text]})
+    emotion=model(df["text"].values.tolist())
+    if emotion!="surprise":
+        return emotion[0]["label"]
+    else:
+        return "neutral"
+
 
 
 def index_from_emotion(emotion, emotions):

@@ -40,9 +40,11 @@ def savetofile():
 
 
 def find_emotion():
+    global emotion
     if "readonly" in combobox.state():
         combobox.configure(state='disabled')
         emotion = extract_from_text(textvar.get())
+        print(emotion)
         combobox.current(index_from_emotion(emotion, emotion_values))
     else:
         combobox.configure(state='readonly')
