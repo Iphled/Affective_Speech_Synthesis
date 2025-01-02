@@ -40,9 +40,13 @@ def audio_to_volume_over_time(path):
     time = np.linspace(0., length, data.shape[0])
     values = list()
     for i in range(data.shape[0]):
-        if data[i][0] > data[i][1]:
+        if (type(data[i]) is list or type(data[i]) is tuple) and len(data[i])> 1:
+            if data[i][0] > data[i][1]:
+                values.append(data[i][0])
+            else:
+                values.append(data[i][1])
+        elif (type(data[i]) is list or type(data[i]) is tuple) and len(data[i])==1:
             values.append(data[i][0])
         else:
-            values.append(data[i][1])
-
-    return values, time
+            values.append(data[i])
+    return values, length
