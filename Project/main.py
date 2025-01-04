@@ -29,7 +29,7 @@ def synthesize():
         level,time = audio_to_volume_over_time(filename,True)
         pitch=audio_to_pitch_over_time(filename)
         time,volume,pitch=execute(level,pitch,emotion)
-        audio=write_back_audio(time,volume,pitch,audio)
+        audio=write_back_audio(time,volume,pitch,audio,time)
     play_audio()
     pass
 
