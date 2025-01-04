@@ -4,10 +4,15 @@ from tkinter import ttk
 from tkinter import filedialog
 import os
 from playsound import playsound
+
+from Project.Audio_to_Values import audio_to_volume_over_time, audio_to_pitch_over_time
+from Project.DL_querying import execute
 # from skimage.morphology.misc import funcs
 
 from Project.Emotion_extraction import extract_from_text, index_from_emotion
 from Project.Text_to_speech import text_to_speech
+from Project.transform_all_audios import pitch
+from Project.write_back_audio import write_back_audio
 
 emotion = "neutral"
 emotion_values = ("Neutral", "Joy", "Sadness", "Anger", "Fear")
@@ -18,6 +23,13 @@ def synthesize():
     text = textvar.get()
     emotion = combobox.get()
     audio = text_to_speech(text)
+    if emotion is not "Neutral" and audio is not None:
+        filename = 'audio_tmp' + '.mp3'
+        audio.save(filename)
+        level,time = audio_to_volume_over_time(filename,True)
+        pitch=audio_to_pitch_over_time(filename)
+        time,volume,pitch=execute(level,pitch,emotion)
+        audio=write_back_audio(time,volume,pitch,audio)
     play_audio()
     pass
 

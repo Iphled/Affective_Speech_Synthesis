@@ -25,13 +25,13 @@ n=0
 for filename in onlyfiles:
     sentence = sentences[filename.split("_")[1]]
     pitch=Audio_to_Values.audio_to_pitch_over_time("data/AudioWAV/"+filename)
-    level,time=Audio_to_Values.audio_to_volume_over_time("data/AudioWAV/"+filename)
+    level,time=Audio_to_Values.audio_to_volume_over_time("data/AudioWAV/"+filename,not all_datapoints)
 
     filename2=filename.replace(".wav","")
-    fp = open("data/curve_small/"+filename2, 'w')
+    fp = open("data/"+filename2, 'w')
     lstr=""
     pstr=""
-    if len(level)<1000 or all_datapoints:
+    if len(level)<=1000 or all_datapoints:
         for l in level:
             lstr=lstr+str(l)+","
     else:

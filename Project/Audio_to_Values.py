@@ -1,6 +1,8 @@
 #Umformung von Audio in Graph
 #Eingabe: Audio
 #Ausgabe: drei Graphen: Tempo, Lautstärke, Pitch
+import math
+
 from pydub import AudioSegment
 from scipy.io.wavfile import read
 from scipy.io import wavfile
@@ -31,7 +33,7 @@ def audio_to_pitch_over_time(path):
         l.append(line)
     return l
 
-def audio_to_volume_over_time(path):
+def audio_to_volume_over_time(path,shorten=False):
     if path.endswith('.mp3'):
         path=mp3_wav(path)
         print(path)
@@ -49,4 +51,21 @@ def audio_to_volume_over_time(path):
             values.append(data[i][0])
         else:
             values.append(data[i])
-    return values, length
+    if shorten:
+        values2=list()
+        sectlen = int(len(values) / 1000)
+        for i in range(1000):
+            mittel = 0
+            count = 0
+            for j in range(i * sectlen, (i + 1) * sectlen):
+                if j < len(values):
+                    count = count + 1
+                    m = values[j]
+                    mittel = mittel + 10 ** ((values[j]) / 10)
+            if (mittel == 0):
+                values2.append(values[j])
+            else:
+                values2.append(10 * math.log(mittel / count, 10))
+        return values2, length
+    else:
+        return values, length
