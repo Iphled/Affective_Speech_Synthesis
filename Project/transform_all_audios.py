@@ -6,6 +6,7 @@ from sympy.physics.units import length
 
 import Audio_to_Values
 
+all_datapoints=False
 sentences={"IEO":"It's eleven o'clock.",
         "TIE":"That is exactly what happened.",
         "IOM":"I'm on my way to the meeting.",
@@ -30,7 +31,7 @@ for filename in onlyfiles:
     fp = open("data/curve_small/"+filename2, 'w')
     lstr=""
     pstr=""
-    if len(level)<1000:
+    if len(level)<1000 or all_datapoints:
         for l in level:
             lstr=lstr+str(l)+","
     else:
