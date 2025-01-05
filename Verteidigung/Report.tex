@@ -1,0 +1,100 @@
+\documentclass[11pt]{article}
+
+\usepackage[final]{acl}
+% Download the ACL style files from the link below.
+% You need the `acl.sty' and `acl_natbib.bst' files, keep these in the same
+% directory as your TeX file.
+% https://github.com/acl-org/acl-style-files/tree/master/latex
+
+\usepackage{times}
+\usepackage{latexsym}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{microtype}
+\usepackage{inconsolata}
+\usepackage{hyperref}
+\usepackage{graphicx}
+
+
+\title{Affective Speech Synthesis - A Return to the Roots}
+
+\author{Hannes Bachmann\\
+  Matriculation number\\
+  Module \\
+  \texttt{email@domain} 
+  \\\And
+  Julia Rennert \\
+  4924490\\
+  INF-VERT2 \\
+  \texttt{julia.rennert@tu-dresden.de}
+  }
+
+
+\begin{document}
+\maketitle
+\begin{abstract}
+Speech synthesis has become a common tool over the past few decades. This opens up the questions whether the synthesized speech can be given a more life-like sounding, namely emotionalism. This problem is accumulated in the field of affective speech synthesis (emotional text-to-speech). \\
+In our project, we combine modern technologies in emotion recognition and text-to-speech with common methodologies of acoustics and machine learning to project their prevalent emotion on sentences and transform them into emotional speech. The advantage of this methodology is its simplicity and possibility to break down the problem into descriptive subproblems, which can be evaluated and optimized separately. We evaluate our method in contrast to the common standard and find whether it can compete.
+\end{abstract}
+
+\section{Introduction}
+Speech synthesis has evolved from a difficult problem to a common tool over the past few decades.
+It started with simulating mouth movements, then moved on to rule-based, concatenative and
+statistical synthesis, and then to using deep learning. Today, synthesized speech is used in a
+variety of applications, such as voice assistants and video dubbing.
+While general speech synthesis has already made good progress, work is still being done on
+how to give language a specific characteristic. To define this problem, the information content of
+the spoken word is divided into three areas. First, there is the content of the text, more or less
+a transcript of what is being said. Then there is the emotion that the speaker conveys through
+his voice. And thirdly, there is the identity of the speaker himself, which is also characterized by
+his voice. Affective Speech Synthesis refers to the change in emotion while the other two areas remain the static.
+
+Currently, the most successful methods of Affective Speech Synthsis are based on deep learning. There are two main approaches. Firstly, one can
+
+Instructions: 
+\begin{enumerate}
+    
+    \item In ``Introduction'', briefly lay out the problem you address, and your contribution. Include an overview/teaser image.
+    \item In ``Related Work'', reference both (1) a selection of previous works on the same/similar problems (and try to differentiate your approach from those), (2) a set of foundational literature relevant to the problem, and your methodology.
+    \item ``Methodology'' lays out your technical approach, high-level, as well in technical detail. Subsections are highly recommended here (and also elsewhere).
+    \item ``Evaluation'' should contain both a quantitative and a qualitative evaluation of your results. If in doubt about metrics and evaluation methodologies, talk to us.
+    \item ``Discussion'' on the one hand builds upon the evaluation, and should critically discuss strengths and weaknesses of your solution, and possible ways to improve it further. On the other hand, it should discuss relevant ethical questions related to the problem and/or your solution at hand.
+\end{enumerate}
+
+
+
+
+\section{Related Work}
+\subsection{Groundwork}
+
+\subsection{Competing Approaches}
+An example citation: \cite{dijkstra1968goto}.
+
+
+\section{Methodology}
+Now let's describe out methodology
+\section{Evaluation}
+
+\section{Discussion}
+
+
+\section{Contribution statement}
+Hannes Bachmann:
+\begin{itemize}
+\item text-to-speech
+\end{itemize}
+Julia Rennert:
+\begin{itemize}
+\item emotion recognition
+\end{itemize}
+\bibliography{references}
+% Create a file `references.bib'
+% 
+% @article{dijkstra1968goto,
+%   title={Go To Statement Considered Harmful (1968)},
+%   inproceedings={CACM},
+%   author={Dijkstra, Edsger},
+%   year={2021}
+% }
+
+\end{document}
