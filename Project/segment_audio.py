@@ -24,7 +24,7 @@ def transcribe_with_vosk(audio_path, model_path='speech_to_text_model\\vosk-mode
 
     :param audio_path: Path to the input audio file (WAV format).
     :param model_path: Path to the Vosk model directory.
-    :return list: List of dictionaries with word and its start and end times.
+    :return word_timestamps: List of dictionaries with word and its start and end times.
     """
     # load Vosk model and audio
     model = Model(model_path)
@@ -54,13 +54,26 @@ def transcribe_with_vosk(audio_path, model_path='speech_to_text_model\\vosk-mode
     return final['result']
 
 
-def get_local_peaks(signal, distance, window_size=3):
+def get_local_peaks(signal, distance):
+    """get peaks of the audio signal
+
+    :param signal: audio signal
+    :param distance: minimal distance between neighboring signal peaks
+    :return: list of peaks
+    """
     peaks, _ = find_peaks(signal, distance=distance)
     return peaks
 
 
 @jit(nopython=True)
 def lowest_local(arr, index, range_size):
+    """get the index of the lowest value in a given range from the given index in the arr
+
+    :param arr: audio signal
+    :param index: given index of the audio signal
+    :param range_size: maximum distance to the given index for the lowest value to occur
+    :return: index of the lowest value in the neighborhood of the given index
+    """
     n = len(arr)
 
     # define time range
@@ -74,6 +87,12 @@ def lowest_local(arr, index, range_size):
 
 
 def find_closest_number(arr, target):
+    """get the index of the value in the array, which is closest to the target value
+
+    :param arr: list of values
+    :param target: some value
+    :return tuple: [closest_value_in_array, index_of_closest_value]
+    """
     # calculate difference
     differences = np.abs(arr - target)
     # smallest difference -> the closest number
@@ -82,6 +101,14 @@ def find_closest_number(arr, target):
 
 
 def adjust_word_timestamps(word_timestamps, audio, sr):
+    """timestamps from transcription are sometimes a bit off.
+    Fixing the start and end timestamps for the corresponding words.
+
+    :param word_timestamps: list of dictionaries with word and their start and end timestamps
+    :param audio: audio signal
+    :param sr: sample rate
+    :return adjusted_word_timestamps: list of dictionaries with word and their adjusted start and end timestamps
+    """
     window_size = 3
     new_word_timestamps = []
     for i, word_data in enumerate(word_timestamps):
@@ -114,12 +141,11 @@ def adjust_word_timestamps(word_timestamps, audio, sr):
 
 
 def segment_audio_by_words(audio_path, model_path, output_dir=None):
-    """
-    Segment audio into word-level chunks using Vosk word-level timestamps.
+    """Segment audio into word-level chunks using Vosk word-level timestamps.
 
-    :param audio_path: Path to the input audio file.
-    :param model_path: Path to the Vosk model directory.
-    :param output_dir: Directory to save the word-level audio chunks.
+    :param audio_path: Path to the input audio file
+    :param model_path: Path to the Vosk model directory
+    :param output_dir: Directory to save the word-level audio chunks
     """
     # load audio
     audio, sr = librosa.load(audio_path, sr=None)
@@ -149,6 +175,13 @@ def segment_audio_by_words(audio_path, model_path, output_dir=None):
 
 
 def audio_transcript(audio_path, model_path, output_dir='word_segments'):
+    """Transcribe audio from path into words and start and end timestamps.
+
+    :param audio_path: path of the audio file (.wav)
+    :param model_path: path of the vosk model
+    :param output_dir: directory to store the word segmentations
+    :return word_timestamps: word segments with their corresponding start and end timestamps
+    """
     # ensure the output directory exists
     os.makedirs(output_dir, exist_ok=True)
 
@@ -158,13 +191,11 @@ def audio_transcript(audio_path, model_path, output_dir='word_segments'):
 
 
 def convert_audio_to_mono_pcm(input_path, output_path, sample_rate=16000):
-    """
-    Convert audio to WAV format, mono PCM, with specified sample rate.
-    (necessary for vosk transcription)
+    """Convert audio to WAV format, mono PCM, with specified sample rate.
 
-    :param input_path: Path to the input audio file.
-    :param output_path: Path to save the converted audio file.
-    :param sample_rate: Target sample rate (e.g., 8000 or 16000 Hz).
+    :param input_path: path to the input audio file.
+    :param output_path: path to save the converted audio file.
+    :param sample_rate: target sample rate (e.g., 8000 or 16000 Hz).
     """
     # load the audio
     audio = AudioSegment.from_file(input_path)
@@ -178,6 +209,12 @@ def convert_audio_to_mono_pcm(input_path, output_path, sample_rate=16000):
 
 
 def plot_audio_with_word_segments(audio_path, word_timestamps, output_plot=None):
+    """plot the segmented audio with overlaying start and end timestamps
+
+    :param audio_path: path to the input audio file.
+    :param word_timestamps: list of word segments with their corresponding start and end timestamps.
+    :param output_plot: path where to store the output plot.
+    """
     # load the audio
     audio, sr = librosa.load(audio_path, sr=None)
     duration = librosa.get_duration(y=audio, sr=sr)
@@ -212,14 +249,13 @@ def plot_audio_with_word_segments(audio_path, word_timestamps, output_plot=None)
 
 
 def segment_audio_by_silence(audio, sr, top_db=20, frame_length=1024, hop_length=512):
-    """
-    Segment audio into chunks based on silence detection
+    """Segment audio into chunks based on silence detection
 
-    :param audio: Audio signal.
-    :param sr: Sampling rate.
-    :param top_db: Threshold in decibels for silence.
-    :param frame_length: Frame length for analysis.
-    :param hop_length: Hop length for analysis.
+    :param audio: audio signal.
+    :param sr: sampling rate.
+    :param top_db: threshold in decibels for silence.
+    :param frame_length: frame length for analysis.
+    :param hop_length: hop length for analysis.
     :return list of tuples (start_sample, end_sample) for each detected segment.
     """
     # detect non-silent intervals
