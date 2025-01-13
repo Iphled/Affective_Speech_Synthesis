@@ -1,7 +1,11 @@
+import os
+
 import audiostretchy.stretch
 import librosa
+import numpy
 import numpy as np
 import pydub
+from cytoolz import remove
 from pydub import AudioSegment
 from pydub.utils import make_chunks
 from scipy.io.wavfile import read
@@ -44,45 +48,47 @@ def change_loudness(audio,start,end):
         audio[i]=p*factor
     return audio
 
+def change_pitch(audio,steps):
+    return librosa.effects.pitch_shift(audio[0], sr=audio[1], n_steps=steps)
+
 def write_back_audio(time,volume,pitch,audio,length):
     parts=segment_audio(audio,length/len(time)*1000)
     for i, chunk in enumerate(parts):
         chunk_name = '{0}.wav'.format(i)
-        chunk_name2 = '{0}s.wav'.format(i)
-        print('exporting', chunk_name)
+        #chunk_name2 = '{0}s.wav'.format(i)
         chunk.export(chunk_name, format='wav')
-        samples = chunk.get_array_of_samples()
-        new_sound = chunk._spawn(samples)
-        arr = np.array(samples).astype(np.float32)
-        print(type(arr))
+        #samples = chunk.get_array_of_samples()
+        #new_sound = chunk._spawn(samples)
+        #arr = np.array(samples).astype(np.float32)
+        #print(type(arr))
         # print(arr)
         # then modify samples...
-        y, index = librosa.effects.trim(arr)
-        y,sr=librosa.load(chunk_name)
+        #y, index = librosa.effects.trim(arr)
+        y,sr=librosa.load(chunk_name,dtype=numpy.float64)
+        os.remove(chunk_name)
         y= stretch((y,sr), time[i])
-        y = np.array(y * (1 << 15), dtype=np.int16)
+
         if i==0:
             y=change_loudness(y,volume[i],volume[i])
         elif i==len(parts)-1:
             y=change_loudness(y,volume[i-1],volume[i-1])
         else:
             y=change_loudness(y,volume[i-1],volume[i])
+        y= change_pitch((y, sr), pitch[i])
+        y = np.array(y * (1 << 15), dtype=np.int16)
         parts[i] = pydub.AudioSegment(
             y.tobytes(),
             frame_rate=sr,
             sample_width=y.dtype.itemsize,
             channels=1
         )
-        parts[i].export(chunk_name2, format='wav')
-
 
     audio=combine_audio(parts)
-
     return audio
 
 rate, data = read("data/test.wav")
 audio = AudioSegment.from_file('data/test.wav', 'r')
 
 length = data.shape[0] / rate
-final=write_back_audio([1.2,0.8,1.2],[3,0.3],[2,1],audio,length)
+final=write_back_audio([1.2,0.8,1.2],[3,0.3],[2,1,6],audio,length)
 final.export("final.wav", format="wav")
