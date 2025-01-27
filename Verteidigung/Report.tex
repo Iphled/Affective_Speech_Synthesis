@@ -69,6 +69,7 @@ Instructions:
 \subsection{Groundwork}
 To understand the ongoings in the research area of affective speech synthesis, let’s first take a short look at regular speech synthesis. The beginning of speech synthesis lies in articulatory synthesis where the scientists tried to remodel the movements of the oral articulators. It was followed by the format synthesis where rule-based changes to amplitudes and frequencies of an oscillating source were made. Unfortunately, it turned out to be complicated to find the needed rules. This approach was followed by the concatenative speech synthesis where prerecorded phonemes, syllables or words were used to construct the speech. As this kind of synthesis needs a lot of prerecorded data and the output has lapses in continuity, it was abandoned for statistical parametric speech synthesis. This kind of synthesis consists of three stages, text analysis to find the correct pronunciation of the given words, the prediction of the speech parameters by using an acoustic model and the vocoding, the construction of the waveform. These stages could include machine learning, oftentimes hidden Markov models. With the upcoming of deep learning, this system was complemented by deep neuronal networks.
 
+
 Affective speech synthesis mostly uses the progress made in regular speech synthesis by utilizing its methods. The first affective speech synthesis algorithms were rule-based like in format synthesis. A very successful example for this type of synthesis is the Affect Editor of Cahn. Just as in regular speech synthesis, this method was followed by a concatenative approach, as for example used by Pierre-Yves to model emotional babbling. Finally, the affective speech synthesis reached a data-driven stage as well.
 Nowadays emotional speech synthesis has two predominating methods. Text-to-emotional-features synthesis tries to extract the emotional utterances directly from the text, while emotional voice conversion goes the step over the regular speech synthesis and then applies the emotion to the pre-created speech. Due to the higher progress in normal speech synthesis research, the second approach is used more frequently.
 
@@ -79,14 +80,13 @@ A common method for emotional speech synthesis on parallel data are so-called GA
 In order to work on non-parallel data, the disentanglement method comes into use. The influences on the voice are thereby split into the content, the emotion, and the speaker. Then different encoders are used to represent those influences.
 Other demands of an affective speech synthesizer are that it controls the intensity of the emotion and that it allows a mixed emotion, for example a transition between sad and happy as it often happens in the mood swing of children. All in all, the synthesizers come to an accuracy of 50-80\% in studies. But their performance greatly depends on the environment, number and kind of emotions, language, culture, acceptance of user input and the resistance against noise.
 
-To name some fields that still warrant improvement, the evaluation of affective speech synthesizers is mostly still done by human studies that evaluate the emotion on a 0 to 5 scale. An automatic evaluation for affective synthesized speech doesn’t exist yet. Also, while a general unified data set for teaching emotional speech generators, ESD, has been created, a benchmark doesn’t exist, neither does a method that triumphs over the other ones. Also, in most data sets there is an overrepresentation of a special language and culture to be seen.
 
 \subsection{Competing Approaches}
-Currently, the most successful methods of Affective Speech Synthsis are based on deep learning. There are two main approaches. Firstly, one can
+We will now take a look on some research in higher detail as to use it for the later evaluation.
 
 
 \section{Methodology}
-Now let's describe out methodology. For this, we will follow our 
+In this section, we will describe out methodology. The basis for our output
 
 \subsection{Text-To-Speech}
 
@@ -108,6 +108,10 @@ Let's first discuss our outcome.
 Another important question is the general ethicality of improving the human-likeliness of synthetized speech. On the one hand, it improves the quality of generated speech. This could be very beneficial for both barrier improvement for blind people as well as translations, commercials, and artists (for example the dubbing of indie computer games). On the other hand, it allows for more believable deep fakes. It also poses the ever-present question of which data can be used for deep learning training without violating copyright. In our case, the data was taken from an open training set, but the given sets are sparse and as in our case too small to get optimal results. The risk of taking the needed training data from sources of questionable copyright such as audio books and quality such as noisy videos.
 
 \section{Conclusion}
+
+It wasn't to be expected that a simple course project can hold up to the research of scientific research.
+
+To name some fields that still warrant improvement, the evaluation of affective speech synthesizers is mostly still done by human studies that evaluate the emotion on a 0 to 5 scale. An automatic evaluation for affective synthesized speech doesn’t exist yet. Also, while a general unified data set for teaching emotional speech generators, ESD, has been created, a benchmark doesn’t exist, neither does a method that triumphs over the other ones. Also, in most data sets there is an overrepresentation of a special language and culture to be seen.
 
 \section{Contribution statement}
 Hannes Bachmann:
