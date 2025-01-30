@@ -25,10 +25,10 @@ n=0
 for filename in onlyfiles:
     sentence = sentences[filename.split("_")[1]]
     pitch=Audio_to_Values.audio_to_pitch_over_time("data/AudioWAV/"+filename)
-    level,time=Audio_to_Values.audio_to_volume_over_time("data/AudioWAV/"+filename,not all_datapoints)
+    level,time=Audio_to_Values.audio_to_volume_over_time("data/AudioWAV/"+filename,all_datapoints)
 
     filename2=filename.replace(".wav","")
-    fp = open("data/"+filename2, 'w')
+    fp = open("data/curve_1000_right/"+filename2, 'w')
     lstr=""
     pstr=""
     if len(level)<=1000 or all_datapoints:
@@ -38,16 +38,22 @@ for filename in onlyfiles:
         length=int(len(level)/1000)
         for i in range(1000):
             mittel=0
+            m2=0
             count=0
             for j in range(i*length,(i+1)*length):
                 if j<len(level):
                     count=count+1
-                    m=level[j]
-                    mittel=mittel+10**((level[j])/10)
+                    mittel=mittel+10**(abs(level[j])/10)
+                    m2=m2+abs(level[j])
+
+            ad=0
             if (mittel==0):
-                lstr=lstr+str(level[j])+","
+                ad=m2/count
             else:
-                lstr=lstr+str(10*math.log(mittel/count,10))+","
+                ad=10*math.log(mittel/count,10)
+            if ad==math.inf or ad==-math.inf:
+                ad=m2/count
+            lstr=lstr+str(ad)+","
 
     for l in pitch:
         pstr=pstr+str(l)+","

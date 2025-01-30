@@ -9,10 +9,12 @@ def extract_from_text(text):
     model = pipeline("text-classification", model="j-hartmann/emotion-english-distilroberta-base")
     df=pd.DataFrame.from_dict({'text':[text]})
     emotion=model(df["text"].values.tolist())
-    if emotion!="surprise":
-        return emotion[0]["label"]
+    if emotion=="surprise":
+        return "fear"
+    elif emotion=="disgust":
+        return "anger"
     else:
-        return "neutral"
+        return emotion[0]["label"]
 
 
 

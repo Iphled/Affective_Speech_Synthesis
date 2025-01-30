@@ -23,10 +23,6 @@ def segment_audio(audio,parts):
 
 def combine_audio(parts):
 
-    # sound1 6 dB louder
-    #louder = sound1 + 6
-
-    # sound1, with sound2 appended (use louder instead of sound1 to append the louder version)
     combined=None
     for part in parts:
         if combined is None:
@@ -35,8 +31,7 @@ def combine_audio(parts):
             combined=combined+part
 
     return combined
-    # simple export
-    #file_handle = combined.export("/path/to/output.mp3", format="mp3")
+
 
 def stretch(audio,factor):
     return librosa.effects.time_stretch(audio[0], rate=factor)
@@ -54,34 +49,30 @@ def change_pitch(audio,steps):
 def write_back_audio(time,volume,pitch,audio,length):
     parts=segment_audio(audio,length/len(time)*1000)
     for i, chunk in enumerate(parts):
-        chunk_name = '{0}.wav'.format(i)
-        #chunk_name2 = '{0}s.wav'.format(i)
-        chunk.export(chunk_name, format='wav')
-        #samples = chunk.get_array_of_samples()
-        #new_sound = chunk._spawn(samples)
-        #arr = np.array(samples).astype(np.float32)
-        #print(type(arr))
-        # print(arr)
-        # then modify samples...
-        #y, index = librosa.effects.trim(arr)
-        y,sr=librosa.load(chunk_name,dtype=numpy.float64)
-        os.remove(chunk_name)
-        y= stretch((y,sr), time[i])
+        if i<len(pitch):
+            chunk_name = '{0}.wav'.format(i)
+            chunk.export(chunk_name, format='wav')
 
-        if i==0:
-            y=change_loudness(y,volume[i],volume[i])
-        elif i==len(parts)-1:
-            y=change_loudness(y,volume[i-1],volume[i-1])
-        else:
-            y=change_loudness(y,volume[i-1],volume[i])
-        y= change_pitch((y, sr), pitch[i])
-        y = np.array(y * (1 << 15), dtype=np.int16)
-        parts[i] = pydub.AudioSegment(
-            y.tobytes(),
-            frame_rate=sr,
-            sample_width=y.dtype.itemsize,
-            channels=1
-        )
+            y,sr=librosa.load(chunk_name,dtype=numpy.float64)
+            os.remove(chunk_name)
+            if i<len(time):
+                y= stretch((y,sr), time[i])
+
+            if i==0:
+                y=change_loudness(y,volume[i],volume[i])
+            elif i==len(parts)-1:
+                y=change_loudness(y,volume[i-1],volume[i-1])
+            else:
+                if i<len(volume):
+                    y=change_loudness(y,volume[i-1],volume[i])
+            y= change_pitch((y, sr), pitch[i])
+            y = np.array(y * (1 << 15), dtype=np.int16)
+            parts[i] = pydub.AudioSegment(
+                y.tobytes(),
+                frame_rate=sr,
+                sample_width=y.dtype.itemsize,
+                channels=1
+            )
 
     audio=combine_audio(parts)
     return audio
