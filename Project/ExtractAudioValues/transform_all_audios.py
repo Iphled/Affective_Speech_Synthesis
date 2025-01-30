@@ -19,10 +19,10 @@ sentences={"IEO":"It's eleven o'clock.",
         "ITS":"I think I've seen this before.",
         "TSI":"The surface is slick.",
         "WSI":"We'll stop in a couple of minutes."}
-onlyfiles = [f for f in listdir("data/AudioWAV") if isfile(join("data/AudioWAV", f))]
+onlyfiles = [f for f in listdir("../data/AudioWAV") if isfile(join("../data/AudioWAV", f))]
 n=0
 
-for filename in onlyfiles:
+for filename in onlyfiles[1618:]:
     sentence = sentences[filename.split("_")[1]]
     pitch=Audio_to_Values.audio_to_pitch_over_time("data/AudioWAV/"+filename)
     level,time=Audio_to_Values.audio_to_volume_over_time("data/AudioWAV/"+filename,all_datapoints)
@@ -39,21 +39,14 @@ for filename in onlyfiles:
         for i in range(1000):
             mittel=0
             m2=0
+            max=0
             count=0
             for j in range(i*length,(i+1)*length):
                 if j<len(level):
-                    count=count+1
-                    mittel=mittel+10**(abs(level[j])/10)
-                    m2=m2+abs(level[j])
+                    if abs(level[j])>max:
+                        max=abs(level[j])
 
-            ad=0
-            if (mittel==0):
-                ad=m2/count
-            else:
-                ad=10*math.log(mittel/count,10)
-            if ad==math.inf or ad==-math.inf:
-                ad=m2/count
-            lstr=lstr+str(ad)+","
+            lstr=lstr+str(max)+","
 
     for l in pitch:
         pstr=pstr+str(l)+","

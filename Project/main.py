@@ -1,9 +1,12 @@
 import tkinter as tk
-from fileinput import filename
+import wave
 from tkinter import ttk
 from tkinter import filedialog
 import os
 from playsound import playsound
+from pydub import AudioSegment
+from pydub.utils import make_chunks
+from scipy.io.wavfile import read
 
 from Project.Audio_to_Values import audio_to_volume_over_time, audio_to_pitch_over_time
 from Project.DL_querying import execute
@@ -11,7 +14,6 @@ from Project.DL_querying import execute
 
 from Project.Emotion_extraction import extract_from_text, index_from_emotion
 from Project.Text_to_speech import text_to_speech
-from Project.transform_all_audios import pitch
 from Project.write_back_audio import write_back_audio
 
 emotion = "neutral"
@@ -23,15 +25,27 @@ def synthesize():
     text = textvar.get()
     emotion = combobox.get()
     audio = text_to_speech(text)
+    filename,audio=gtts_to_audiosegment(audio)
     if emotion is not "Neutral" and audio is not None:
-        filename = 'audio_tmp' + '.mp3'
-        audio.save(filename)
-        level,time = audio_to_volume_over_time(filename,True)
+        level,length = audio_to_volume_over_time(filename,True)
         pitch=audio_to_pitch_over_time(filename)
         time,volume,pitch=execute(level,pitch,emotion)
-        audio=write_back_audio(time,volume,pitch,audio,time)
+        audio=write_back_audio(time,volume,pitch,audio,length)
+        os.remove(filename)
+
     play_audio()
     pass
+
+def gtts_to_audiosegment(audio):
+    filename = 'audio_tmp' + '.wav'
+    filename2 = 'audio_tmp' + '.mp3'
+    audio.save(filename2)
+    sound = AudioSegment.from_mp3(filename2)
+    sound.export(filename, format="wav")
+    rate, data = read(filename)
+    length = data.shape[0] / rate
+    os.remove(filename2)
+    return filename,sound
 
 
 def play_audio():
@@ -39,7 +53,10 @@ def play_audio():
     print(audio)
     if audio is not None:
         filename = 'audio_tmp' + '.mp3'
-        audio.save(filename)
+        if type(audio) == AudioSegment:
+            audio.export(filename, format="mp3")
+        else:
+            audio.save(filename)
         playsound(filename)
         os.remove(filename)
 
@@ -48,7 +65,7 @@ def savetofile():
     print(audio)
     if audio is not None:
         f = filedialog.asksaveasfilename(initialdir = "/",title = "Select file",filetypes = (("mp3 files","*.mp3"),("all files","*.*")))
-        audio.save(f)
+        audio.export(f,format="mp3")
 
 
 def find_emotion():
@@ -87,6 +104,6 @@ if __name__ == "__main__":
     button = tk.Button(root, text="Synthesize", command=synthesize)
     button.pack()
 
-    savebutton = tk.Button(root, text="SavetoFile", command=savetofile)
+    savebutton = tk.Button(root, text="Save to File", command=savetofile)
     savebutton.pack()
     root.mainloop()

@@ -1,3 +1,3 @@
 
 def execute(volume,pitch,emotion):
-    return None,None,None
+    return [1,1],[1],[0,0]
