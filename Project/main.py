@@ -20,6 +20,7 @@ emotion = "neutral"
 emotion_values = ("Neutral", "Joy", "Sadness", "Anger", "Fear")
 audio=None
 
+
 def synthesize():
     global audio
     text = textvar.get()
