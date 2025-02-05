@@ -1,0 +1,55 @@
+This is BibTeX, Version 0.99d (TeX Live 2023/Debian)
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: Report.aux
+The style file: acl_natbib.bst
+Reallocated glb_str_ptr (elt_size=4) to 20 items from 10.
+Reallocated global_strs (elt_size=200001) to 20 items from 10.
+Reallocated glb_str_end (elt_size=4) to 20 items from 10.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated wiz_functions (elt_size=4) to 6000 items from 3000.
+Database file #1: NLP.bib
+Warning--empty journal in arias_beyond_2020
+Warning--empty journal in cahn_generation_2000
+You've used 12 entries,
+            3734 wiz_defined-function locations,
+            813 strings with 9000 characters,
+and the built_in function-call counts, 9840 in all, are:
+= -- 845
+> -- 522
+< -- 9
++ -- 192
+- -- 175
+* -- 689
+:= -- 1511
+add.period$ -- 54
+call.type$ -- 12
+change.case$ -- 130
+chr.to.int$ -- 13
+cite$ -- 14
+duplicate$ -- 580
+empty$ -- 654
+format.name$ -- 208
+if$ -- 2103
+int.to.chr$ -- 1
+int.to.str$ -- 1
+missing$ -- 128
+newline$ -- 66
+num.names$ -- 48
+pop$ -- 299
+preamble$ -- 1
+purify$ -- 106
+quote$ -- 0
+skip$ -- 482
+stack$ -- 0
+substring$ -- 334
+swap$ -- 330
+text.length$ -- 12
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 108
+warning$ -- 2
+while$ -- 49
+width$ -- 0
+write$ -- 162
+(There were 2 warnings)

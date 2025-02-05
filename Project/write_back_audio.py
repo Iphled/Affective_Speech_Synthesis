@@ -1,4 +1,5 @@
 import os
+import array
 
 import audiostretchy.stretch
 import librosa
@@ -36,7 +37,7 @@ def combine_audio(parts):
 def stretch(audio,factor):
     return librosa.effects.time_stretch(audio[0], rate=factor)
 
-def change_loudness(audio,start,end):
+def change_loudness(audio,start,end,emphasis):
     length=len(audio)
     for i,p in enumerate(audio):
         factor=start+(end-start)/length*i
@@ -46,8 +47,18 @@ def change_loudness(audio,start,end):
 def change_pitch(audio,steps):
     return librosa.effects.pitch_shift(audio[0], sr=audio[1], n_steps=steps)
 
-def write_back_audio(time,volume,pitch,audio,length):
-    parts=segment_audio(audio,length/len(time)*1000)
+def write_back_audio(time,volume,pitch,audio,length,pause=0,emphasis=1):
+
+    a2=list(array.array(audio.array_type, audio._data))
+    for i in range(len(a2)):
+        a2[i]=abs(a2[i])
+    asort=a2.sort()
+    median=asort[len(asort)//2]
+
+
+    parts = segment_audio(audio, length / len(time) * 1000)
+
+
     for i, chunk in enumerate(parts):
         if i<len(pitch):
             chunk_name = '{0}.wav'.format(i)
@@ -59,12 +70,12 @@ def write_back_audio(time,volume,pitch,audio,length):
                 y= stretch((y,sr), time[i])
 
             if i==0:
-                y=change_loudness(y,volume[i],volume[i])
+                y=change_loudness(y,volume[i],volume[i],emphasis)
             elif i==len(parts)-1:
-                y=change_loudness(y,volume[i-1],volume[i-1])
+                y=change_loudness(y,volume[i-1],volume[i-1],emphasis)
             else:
                 if i<len(volume):
-                    y=change_loudness(y,volume[i-1],volume[i])
+                    y=change_loudness(y,volume[i-1],volume[i],emphasis)
             y= change_pitch((y, sr), pitch[i])
             y = np.array(y * (1 << 15), dtype=np.int16)
             parts[i] = pydub.AudioSegment(
