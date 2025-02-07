@@ -24,6 +24,8 @@ from Audio_to_Values import mp3_wav, audio_to_pitch_over_time, audio_to_volume_o
 
 # import soundfile as sf
 
+DEVICE = ('cuda' if torch.cuda.is_available() else 'cpu')
+
 
 class SpectrogramTransformer(nn.Module):
     """
@@ -68,6 +70,7 @@ def create_model():
 
     # initialize model
     model = SpectrogramTransformer(input_dim, num_heads, hidden_dim, num_layers)
+    model = model.to(DEVICE)
 
     # loss function and optimizer
     criterion = nn.MSELoss()
@@ -97,7 +100,7 @@ def load_audio_to_spectrogram(file_path, sr=16000, n_mels=128, n_fft=400, hop_le
         y=waveform, sr=sr, n_fft=n_fft, hop_length=hop_length, n_mels=n_mels
     )
     mel_spec = librosa.power_to_db(mel_spec)  # Convert to decibels
-    return torch.tensor(mel_spec, dtype=torch.float32)
+    return torch.tensor(mel_spec, dtype=torch.float32, device=DEVICE)
 
 
 def spectrogram_to_audio(mel_spec, sr=16000, n_fft=400, hop_length=160):
@@ -129,20 +132,34 @@ def train_model(model, optimizer, criterion, AUDIO_DIR, n_epochs=100):
     neutral_audio_file_names = [f for f in os.listdir(AUDIO_DIR) if 'NEU' in f]
     emotional_audio_file_names = [f for f in os.listdir(AUDIO_DIR) if 'ANG' in f]
 
+    use_emotion = 'ANG'
+
     for i in range(n_epochs):
+        epoch_loss = 0
+        total_loss_count = 0
         for f_neutral in neutral_audio_file_names:
             neutral_spec = load_audio_to_spectrogram(file_path=AUDIO_DIR + '\\' + f_neutral)
-            neutral_sentence = filter_sentence_tag(f_neutral)
+            neutral_sentence, _ = filter_tags(f_neutral)
+            loss_per_neutral = 0
+            loss_count = 0
             for f_emotional in emotional_audio_file_names:
-                emotional_sentence = filter_sentence_tag(f_emotional)
-                if emotional_sentence != neutral_sentence:
+                emotional_sentence, emotion = filter_tags(f_emotional)
+                if f_neutral.replace('NEU', '') != f_emotional.replace(emotion, '') or emotion != use_emotion:
                     continue
                 emotional_spec = load_audio_to_spectrogram(file_path=AUDIO_DIR + '\\' + f_emotional)
                 loss = train_step(model, optimizer, criterion, neutral_spec, emotional_spec)
-                print(f"Training Loss: {loss}")
-                # Todo 1: augment to generate even more pairs
-                # Todo 2: create batch for each neutral audio
+                loss_per_neutral += loss
+                loss_count += 1
+            total_loss = loss_per_neutral / loss_count if loss_count > 0 else None
+            if total_loss is not None:
+                epoch_loss += total_loss
+                total_loss_count += 1
+            # print(f"Training Loss: {total_loss}")
+        print(f'Epoch Loss: {epoch_loss / total_loss_count}')
+        # Todo 1: augment to generate even more pairs
+        # Todo 2: create batch for each neutral audio
     # Todo 3: consider training one model per emotion as long as no additional target emotion tag is used ass input
+    pass
 
 
 def generate_emotional_spectrogram(model, neutral_spectrogram):
@@ -153,9 +170,9 @@ def generate_emotional_spectrogram(model, neutral_spectrogram):
     return generated_spectrogram
 
 
-def filter_sentence_tag(s):
-    match = re.search(r'\d+_([a-zA-Z]+)_', s)
-    return match.group(1) if match else None
+def filter_tags(s):
+    sp = s.split('_')
+    return sp[1], sp[2]
 
 
 if __name__ == '__main__':
