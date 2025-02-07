@@ -190,7 +190,7 @@ In order to implement a usable synthesizer, I created a GUI application. It cons
 \begin{figure}[h]
  \centering
 \includegraphics[width=0.4\textwidth]{"Bilder/GUI.png"}
-\caption{figure}{GUI of the implementation}
+\caption{GUI of the implementation}
 \end{figure}
 
 The sentence is then synthesized using the procedure in Figure \ref{Ablauf}. The complication is here to choose suitable python libraries to create and transform the audio clip. Google text-to-speech saves its output in a designated gtts class which has no options for transformation but can only be saved. In contrast, to get attributes like the volume or pitch of the audio or split it in segments, it needs to be transformed into another format. For volume and splitting, it suffices, to parse the audio into the AudioSegment format. Because the pitch is a complex attribute and not directly visible within the wave form of a audio, it needs more advanced functions, which can be found in the Librosia library. The same is to be said for stretching an audio, since a simple time stretch would not only change the length of the audio but also its frequencies and therefore the pitch.
