@@ -66,7 +66,7 @@ his voice. Affective Speech Synthesis refers to the change in emotion while the 
 
 The most successful current approaches are based on deep learning\cite{triantafyllopoulos_overview_2023, cho_multi-speaker_2021, diatlova_emospeech_2023}. This warrants the question, whether a more traditional acousics-based approach can still compare to some extend. For this purpose, we tried to apply two competing approaches to the problem of emotional TTS, one up to the current deep learning methods, and one a mixture of acoustics and basic machine learning. 
 
-In Section \ref{related_work}, we will discuss the basics of (affective) speech synthsis and the current research. Our own methodologies will be introduced in Section \ref{methodology}. Then we evaluate the methods in  Section \ref{evaluation} by comparing the outcomes to each other and two approaches of previous research, where one of them is a current deep learning approach and one a more traditional statistical method. We discuss the outcome in Section \ref{discussion} and summarize our findings in Section \ref{conclusion}.
+In Section \ref{related_work}, we will discuss the basics of (affective) speech synthesis and the current research. Our own methodologies will be introduced in Section \ref{methodology}. Then we evaluate the methods in  Section \ref{evaluation} by comparing the outcomes to each other and two approaches of previous research, where one of them is a current deep learning approach and one a more traditional statistical method. We discuss the outcome in Section \ref{discussion} and summarize our findings in Section \ref{conclusion}.
 
 \begin{table}[h]
 
@@ -119,7 +119,9 @@ Our first comparison is to the Affect Editor of \cite{cahn_generation_2000}. As 
 
 In comparison to Cahn's method, our simple approach uses a similar idea in terms of finding appropriate values to the most important acoustic values such as pitch, volume and timing. In contrast to the previously described method, the parameters are evaluated using machine learning instead of acoustic background knowledge. Thus, the primary contribution of the approach 2 is to search for a middle-way between acoustic knowledge and machine learning.
 
-Our second comparison is to a novel approach by \cite{diatlova_emospeech_2023}. Based on the FastSpeech2 TTS architecture, they constructed their emotional TTS (EmoSpeech) model. FastSpeech2 is an encoder-decoder architecture which uses a feed-forward transformer block, a stack of multihead self-attention layers and 1D-convolution. With the use of embedding tables and FastSpeech2's eGeMAPS predictor, emotion is then projected on FastSpeech2's output on an utterance level.
+Our second comparison is to a novel approach by \cite{diatlova_emospeech_2023}. Based on the FastSpeech2 TTS architecture, they constructed their emotional TTS (EmoSpeech) model. FastSpeech2 is an encoder-decoder architecture which uses a feed-forward transformer block, a stack of multihead self-attention layers and 1D-convolution. With the use of embedding tables and FastSpeech2's eGeMAPS predictor, emotion is then projected on FastSpeech2's output on an utterance level. \\
+In our first approach we used XTTS-v2, a TTS model developed by \cite{casanova2024xtts} from Coqui capable of synthesizing speech with controllable speaker identity. By providing the model model with a audio reference with a emotional speaker characteristic, we were able to create an audio from a given text, which also contains the emotion of the speaker. \\
+Instead of using a reference audio for emotion transfer, EmoSpeech utilizes explicit emotional embeddings that are trained on the emotion-labeled Emotional Speech Database (ESD) \cite{zhou2022emotional}. Unlike our first approach which uses XTTS-v2, which can generalize to new speakers and emotions dynamically, EmoSpeech is limited to the speakers and emotion categories present in its training data. Additionally, this allows XTTS-v2 to adopt new emotions with a short reference sample, while EmoSpeech requires further training on a dataset including this emotion.   
 \\
 
 \todo{Vergleich zu Hannes' Ansatz}
@@ -148,10 +150,10 @@ The second dataset is \cite{cao_data}, a dataset of 7,442 audio recordings taken
 In order to use emotions that both datasets know, we create the intersection of the emotions: Joy (happiness), sadness, anger, and fear. Additionally, we add a neutral category.
 \subsection{Text-To-Speech}
 Text-to-speech (TTS) deals with the problem of converting normal language text into spoken words mostly in the form of an audio signal. 
-In the current development environment, there are multiple advanced TTS libraries like Tacotron2 by \cite{shen_natural_2018} from NVIDIA, Google text-to-speech (Gtts) \cite{gtts} or Azure AI speech of Microsoft. For simplicity reasons, we decided to use Gtts. Initially Gtts used a concatenative and parametric speech synthesis. In later versions it utilized WaveNet, a deep generative model developed by \citeauthor{van2016wavenet} from DeepMind which is able to directly generate raw audio waveforms from given text.
+In the current development environment, there are multiple advanced TTS libraries like Tacotron2 by \cite{shen_natural_2018} from NVIDIA, Google text-to-speech (Gtts) \cite{gtts} or Azure AI speech of Microsoft. For simplicity reasons, we decided to use Gtts. Initially Gtts used a concatenative and parametric speech synthesis. In later versions it utilized WaveNet, a deep generative model developed by \citeauthor{van2016wavenet} from DeepMind which is able to directly generate raw audio wave forms from given text.
 \subsection{Emotion Recognition}
 
-The second ground stone of the information extraction is the emotion recognition. I used the Emotion English DistilRoBERTa-base\cite{hartmann2022emotionenglish}, which is trained to recognize six emotions: joy, sadness, anger, disgust, surprise and fear. The model performs well on the testing set in that it classifies 92\% of the emotions correctly. Only 19\% of the mismatched information are classified into the two emotion categories, that are not part of the input for our model. As for disgust we deal with it by classifying it as the most likely other known class, which is anger (87\%). Surprise is more differenciated, therefore it is evaluated further by enhancing the sentences with the allowed emotions and giving it to the model egain. If the model recognizes another emotion, this one is prefered, otherwise the sentence is given a neutral conotation. This improves the missinterpretation of surprise up to 73\%.
+The second ground stone of the information extraction is the emotion recognition. I used the Emotion English DistilRoBERTa-base\cite{hartmann2022emotionenglish}, which is trained to recognize six emotions: joy, sadness, anger, disgust, surprise and fear. The model performs well on the testing set in that it classifies 92\% of the emotions correctly. Only 19\% of the mismatched information are classified into the two emotion categories, that are not part of the input for our model. As for disgust we deal with it by classifying it as the most likely other known class, which is anger (87\%). Surprise is more differenciated, therefore it is evaluated further by enhancing the sentences with the allowed emotions and giving it to the model again. If the model recognizes another emotion, this one is prefered, otherwise the sentence is given a neutral co-notation. This improves the misinterpretation of surprise up to 73\%.
 
 The whole procedure can be thus described as follows:
 {
@@ -165,7 +167,7 @@ E(s)=\begin{cases}
 \end{equation*}
 }
 where $E$ is the emotion recognition algorithm, $s$ is the sentence model is the output of the Emotion English DistilRoBERTa-base, and $emo_i$ is a list of all allowed emotions integrated into the sentence "I am very *." in different variations.
-This procedure pushes up the classifiaction accuracy to 93\%.
+This procedure pushes up the classification accuracy to 93\%.
 
 \subsection{Approach 1 - Hannes}
 Our first approach is about using recent deep learning methods to generate an emotional audio. 
