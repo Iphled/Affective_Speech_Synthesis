@@ -194,8 +194,7 @@ In order to implement a usable synthesizer, I created a GUI application. It cons
 \end{figure}
 
 The sentence is then synthesized using the procedure in Figure \ref{Ablauf}. The complication is here to choose suitable python libraries to create and transform the audio clip. Google text-to-speech saves its output in a designated gtts class which has no options for transformation but can only be saved. In contrast, to get attributes like the volume or pitch of the audio or split it in segments, it needs to be transformed into another format. For volume and splitting, it suffices, to parse the audio into the AudioSegment format. Because the pitch is a complex attribute and not directly visible within the wave form of a audio, it needs more advanced functions, which can be found in the Librosia library. The same is to be said for stretching an audio, since a simple time stretch would not only change the length of the audio but also its frequencies and therefore the pitch.
-
-Finally, the audio clip is ready. It can be replayed and saved to a file.
+Finally, the audio clip is ready. It is replayed and can be saved to a file.
 
 \section{Evaluation}
 \label{evaluation}
@@ -204,6 +203,8 @@ Finally, the audio clip is ready. It can be replayed and saved to a file.
 One of the ongoing problems of affective speech synthsis is that there isn't a global benchmark yet\cite{triantafyllopoulos_overview_2023}. Every paper uses their own methodology and testing dataset. In contrast, we want to propose a benchmark. The benchmark is separated in to two datasets containing 12 sentences each. Some of them are taken from the \cite{saravia-etal-2018-carer} dataset.
 
 The first sentence collection contains simple sentences that don't have any subclauses. They are used to gather information about the general emotion representation in the spoken sentences. The second set of sentences contains sentences that have at least one subclause. The sentences are ordered by their lenght and should be used to prove that the algorithm can also work on non-standard sentences.
+
+The sentences are then interlaced with the four emotions anger, happiness, sadness and fear. Additionally, there is a neutral category. One or more study participants listen to the sentences and annotate them with an emotion.
 
 
 \subsection{Results}
@@ -269,6 +270,8 @@ Julia Rennert:
 \end{itemize}
 
 \section{Link to the Repository}
+
+Please note that the data is not in the repository as the audio files are too big. To test out the algorithms that require the audios, please download them from the dataset source described above, and add them to the project in a "data" folder.
 
 % Create a file `references.bib'
 % 
