@@ -1,3 +1,4 @@
+import math
 import os
 import array
 
@@ -37,24 +38,76 @@ def combine_audio(parts):
 def stretch(audio,factor):
     return librosa.effects.time_stretch(audio[0], rate=factor)
 
-def change_loudness(audio,start,end,emphasis):
+def change_loudness(audio,start,end,emphasis,median,shaky):
     length=len(audio)
-    for i,p in enumerate(audio):
-        factor=start+(end-start)/length*i
-        audio[i]=p*factor
+    vib=0
+    if emphasis == 1:
+        for i,p in enumerate(audio):
+            factor=start+(end-start)/length*i
+            audio[i]=p*factor+vib
+            if shaky:
+                vib=10*math.sin(i*100)
+    else:
+        for i,p in enumerate(audio):
+            factor=(start+(end-start)/length*i)
+            if p>0:
+                p=max(emphasis*((p*factor)-median)+median,0)
+            else :
+                p=min(0,emphasis*((p*factor)+median)-median)
+            audio[i]=p*factor+vib
+            if shaky:
+                vib=math.sin(i/100)
     return audio
 
 def change_pitch(audio,steps):
     return librosa.effects.pitch_shift(audio[0], sr=audio[1], n_steps=steps)
 
-def write_back_audio(time,volume,pitch,audio,length,pause=0,emphasis=1):
-
-    a2=list(array.array(audio.array_type, audio._data))
+def input_pause(audio,median,pause,timeout):
+    ar = array.array(audio.array_type, audio._data)
+    a2 = list(ar)
+    time =0
+    stretch=timeout*pause
     for i in range(len(a2)):
-        a2[i]=abs(a2[i])
-    asort=a2.sort()
-    median=asort[len(asort)//2]
+        if time==0:
+            if abs(a2[i])<median/2:
+                time=int(timeout)+timeout*pause
+                stretch=timeout*pause
+        else:
+            time-=1
+            stretch=stretch-1
+            if stretch>0:
+                a2.insert(i+1,a2[i])
 
+    res = array.array(ar.typecode, a2)
+    audio = audio._spawn(res)
+    return audio
+
+def write_back_audio(time,volume,pitch,audio,length,pause=0,emphasis=1,shaky=False):
+    audio_name = 'test.wav'
+    audio.export(audio_name, format='wav')
+
+    y, sr = librosa.load(audio_name, dtype=numpy.float64)
+    os.remove(audio_name)
+    i=0
+    not0=0
+    yt,index=librosa.effects.trim(y)
+    audio = pydub.AudioSegment(
+                yt.tobytes(),
+                frame_rate=sr,
+                sample_width=y.dtype.itemsize,
+                channels=1
+            )
+
+    median=0
+    if pause!=0 or emphasis!=1:
+        for i in range(len(y)):
+            y[i]=abs(y[i])
+        asort=y.copy()
+        asort.sort()
+        median=asort[len(asort)//2]
+
+    if pause!=0:
+        input_pause(audio,median,pause,len(audio)/length*0.1)
 
     parts = segment_audio(audio, length / len(time) * 1000)
 
@@ -70,12 +123,12 @@ def write_back_audio(time,volume,pitch,audio,length,pause=0,emphasis=1):
                 y= stretch((y,sr), time[i])
 
             if i==0:
-                y=change_loudness(y,volume[i],volume[i],emphasis)
+                y=change_loudness(y,volume[i],volume[i],emphasis,median,shaky)
             elif i==len(parts)-1:
-                y=change_loudness(y,volume[i-1],volume[i-1],emphasis)
+                y=change_loudness(y,volume[i-1],volume[i-1],emphasis,median,shaky)
             else:
                 if i<len(volume):
-                    y=change_loudness(y,volume[i-1],volume[i],emphasis)
+                    y=change_loudness(y,volume[i-1],volume[i],emphasis,median,shaky)
             y= change_pitch((y, sr), pitch[i])
             y = np.array(y * (1 << 15), dtype=np.int16)
             parts[i] = pydub.AudioSegment(
