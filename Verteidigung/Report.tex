@@ -32,7 +32,7 @@
 \author{Hannes Bachmann\\
   4847472\\
   INF BAS \\
-  \texttt{\small hannes.bachmann@mailbox.tu-online.de} 
+  \texttt{\small hannes.bachmann@mailbox.tu-online.de}
   \\ \And
   Julia Rennert \\
   4924490\\
@@ -105,7 +105,7 @@ Another distinguisher is made by the type of data that is available for the trai
 \caption{The two most prevalent GAN approaches as depicted by \cite{triantafyllopoulos_overview_2023}}
 \end{figure}
 
-A common method for emotional speech synthesis on parallel data are so-called GANs. They consist of two neuronal networks, the generator and the discriminator. The generator is given a sentence with a specific emotion that it needs to transform into another emotion. After this task is done, the transformed sentence is given to the discriminator which also receives a naturally spoken sentence with the same emotion. The task of the discriminator is to distinguish between the naturally spoken and the generates sentence. In the learning process, generator and discriminator continuously improve themselves. Improvements of this method are the CycleGAN, where two GANs translate between two different emotions such that GAN 1 takes emotion 1 and transforms it into emotion 2, and GAN 2 takes emotion 2 and transforms it back into emotion 1, and StarGAN where generator and discriminator are trained to work on multiple domains.
+A common method for emotional speech synthesis on parallel data are so-called GANs. They consist of two neuronal networks, the generator and the discriminator. The generator is given a sentence with a specific emotion that it needs to transform into another emotion. After this task is done, the transformed sentence is given to the discriminator which also receives a naturally spoken sentence with the same emotion. The task of the discriminator is to distinguish between the naturally spoken and the generates sentence. In the learning process, generator and discriminator continuously improve themselves. Improvements of this method are the CycleGAN, where two GANs translate between two different emotions such that the first GAN takes one emotion and transforms it into another emotion, and the second GAN takes this so generated emotion and transforms it back into the first emotion, and StarGAN where generator and discriminator are trained to work on multiple domains.
 
 In order to work on non-parallel data, the disentanglement method comes into use. The influences on the voice are thereby split into the content, the emotion, and the speaker. Then different encoders are used to represent those influences.
 Other demands of an affective speech synthesizer are that it controls the intensity of the emotion and that it allows a mixed emotion, for example a transition between sad and happy as it often happens in the mood swing of children. All in all, the synthesizers come to an accuracy of 50-80\% in studies. But their performance greatly depends on the environment, number and kind of emotions, language, culture, acceptance of user input and the resistance against noise \cite{triantafyllopoulos_overview_2023}.
@@ -119,7 +119,7 @@ Our first comparison is to the Affect Editor of \cite{cahn_generation_2000}. As 
 
 In comparison to Cahn's method, our simple approach uses a similar idea in terms of finding appropriate values to the most important acoustic values such as pitch, volume and timing. In contrast to the previously described method, the parameters are evaluated using machine learning instead of acoustic background knowledge. Thus, the primary contribution of the approach 2 is to search for a middle-way between acoustic knowledge and machine learning.
 
-Our second comparison is to a novel approach by \cite{diatlova_emospeech_2023}. Based on the FastSpeech2 TTS architecture, they constructed their emotional TTS method. FastSpeech2 is an encoder-decoder architecture which uses a feed-forward transformer block, a stack of multihead self-attention layers and 1D-convolution. With the use of embedding tables and FastSpeech2's eGeMAPS predictor, emotion is then projected on FastSpeech2's output on an utterance level.
+Our second comparison is to a novel approach by \cite{diatlova_emospeech_2023}. Based on the FastSpeech2 TTS architecture, they constructed their emotional TTS (EmoSpeech) model. FastSpeech2 is an encoder-decoder architecture which uses a feed-forward transformer block, a stack of multihead self-attention layers and 1D-convolution. With the use of embedding tables and FastSpeech2's eGeMAPS predictor, emotion is then projected on FastSpeech2's output on an utterance level.
 \\
 
 \todo{Vergleich zu Hannes' Ansatz}
@@ -130,7 +130,7 @@ The reason for the choice of these two papers is that one of them is a deep dive
 \label{methodology}
 In this section, we will explain our methodology. The basis is a method described by \cite{bohra_smart_2022}. The input is a single textual sentence. In the first step, the prevalent emotion is extracted with the help of a LLM. Then the text is transformed to (neutral) speech. Now starts the actual emotion embedding and our own work which is diverging from Bohra's method.
 
-While the two approaches we followed differ widely, we can still subdivide them further into a pre-processing, model application and post-processing phase. During the preprocessing, the audios are transformed into sequences or values, that are less dependent on the actual audio. Those are fed into the neural network together with the emotion. The output is the transformation that the audio needs to undergo in order to display the wished emotion. In the final step, this transformation is undertaken.
+While the two approaches we followed differ widely, we can still subdivide them further into a pre-processing, model application and post-processing phase. During the pre-processing, the audios are transformed into sequences or values, that are less dependent on the actual audio. Those are fed into the neural network together with the emotion. The output is the transformation that the audio needs to undergo in order to display the wished emotion. In the final step, this transformation is undertaken.
 
 \begin{figure}[h]
  \centering
@@ -148,7 +148,7 @@ The second dataset is \cite{cao_data}, a dataset of 7,442 audio recordings taken
 In order to use emotions that both datasets know, we create the intersection of the emotions: Joy (happiness), sadness, anger, and fear. Additionally, we add a neutral category.
 \subsection{Text-To-Speech}
 Text-to-speech (TTS) deals with the problem of converting normal language text into spoken words mostly in the form of an audio signal. 
-In the current development environment, there are multiple advanced TTS libraries like \cite{shen_natural_2018} from NVIDIA, Google text-to-speech (Gtts) \cite{gtts} or Azure AI speech of Microsoft. For simplicity reasons, we decided to use Gtts. Initially Gtts used a concatenative and parametric speech synthesis. In later versions it utilized WaveNet, a deep generative model developed by \citeauthor{van2016wavenet} from DeepMind which is able to directly generate raw audio waveforms from given text. 
+In the current development environment, there are multiple advanced TTS libraries like Tacotron2 by \cite{shen_natural_2018} from NVIDIA, Google text-to-speech (Gtts) \cite{gtts} or Azure AI speech of Microsoft. For simplicity reasons, we decided to use Gtts. Initially Gtts used a concatenative and parametric speech synthesis. In later versions it utilized WaveNet, a deep generative model developed by \citeauthor{van2016wavenet} from DeepMind which is able to directly generate raw audio waveforms from given text.
 \subsection{Emotion Recognition}
 
 The second ground stone of the information extraction is the emotion recognition. I used the Emotion English DistilRoBERTa-base\cite{hartmann2022emotionenglish}, which is trained to recognize six emotions: joy, sadness, anger, disgust, surprise and fear. The model performs well on the testing set in that it classifies 92\% of the emotions correctly. Only 19\% of the mismatched information are classified into the two emotion categories, that are not part of the input for our model. As for disgust we deal with it by classifying it as the most likely other known class, which is anger (87\%). Surprise is more differenciated, therefore it is evaluated further by enhancing the sentences with the allowed emotions and giving it to the model egain. If the model recognizes another emotion, this one is prefered, otherwise the sentence is given a neutral conotation. This improves the missinterpretation of surprise up to 73\%.
@@ -168,6 +168,18 @@ where $E$ is the emotion recognition algorithm, $s$ is the sentence model is the
 This procedure pushes up the classifiaction accuracy to 93\%.
 
 \subsection{Approach 1 - Hannes}
+Our first approach is about using recent deep learning methods to generate an emotional audio. 
+ 
+...
+We carried out two experiments: \\
+1. Training a transformer based model on prediction the emotional audio from a neutral one. \\
+2. Using the TTS model XTTS-v2 by \cite{casanova2024xtts} and its voice cloning ability to mimic not only the speaker but also its emotion.\\
+...
+\subsubsection{Neutral-to-Emotional Transformer}
+...
+\subsubsection{Emotion Insertion using XTTS-v2}
+...
+
 \todo{Hannes' Ansatz}
 \subsection{Approach 2}
 
