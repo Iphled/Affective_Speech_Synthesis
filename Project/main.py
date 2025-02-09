@@ -27,7 +27,7 @@ def synthesize():
     emotion = combobox.get()
     audio = text_to_speech(text)
     filename,audio,length=gtts_to_audiosegment(audio)
-    if emotion is not "Neutral" and audio is not None:
+    if emotion!="Neutral" and audio is not None:
         if emotion=="Joy":
             audio=writeback_happy(audio,length)
         if emotion=="Sadness":
