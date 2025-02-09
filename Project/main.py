@@ -3,6 +3,8 @@ import wave
 from tkinter import ttk
 from tkinter import filedialog
 import os
+
+import librosa
 from playsound import playsound
 from pydub import AudioSegment
 from pydub.utils import make_chunks
@@ -13,11 +15,14 @@ from Project.Audio_to_Values import audio_to_volume_over_time, audio_to_pitch_ov
 
 from Project.Emotion_extraction import extract_from_text, index_from_emotion
 from Project.Text_to_speech import text_to_speech
-from Project.write_back_audio import write_back_audio, writeback_happy, writeback_sad, writeback_angry, \
-    writeback_fearful, overlay_emotion
+# from Project.write_back_audio import write_back_audio, writeback_happy, writeback_sad, writeback_angry, \
+#     writeback_fearful
+from Project.emotional_xtts_pipeline import convert_text_to_audio_and_store
+from Project.denoiser import denoise_audio, restore_volume
 
 emotion = "neutral"
 emotion_values = ("Neutral", "Joy", "Sadness", "Anger", "Fear")
+syn_methods = ("Acoustic Features", "Emotional XTTS-v2")
 audio=None
 
 
@@ -28,11 +33,51 @@ def synthesize():
     audio = text_to_speech(text)
     filename,audio,length=gtts_to_audiosegment(audio)
     if emotion!="Neutral" and audio is not None:
-        audio=overlay_emotion(audio, length, emotion)
+        if emotion=="Joy":
+            audio=writeback_happy(audio,length)
+        if emotion=="Sadness":
+            audio=writeback_sad(audio,length)
+        if emotion=="Anger":
+            audio=writeback_angry(audio,length)
+        if emotion=="Fear":
+            audio=writeback_fearful(audio,length)
         os.remove(filename)
 
     play_audio()
     pass
+
+
+def synthesize_xtts():
+    global audio
+    text = textvar.get()
+    emotion = combobox.get()
+    emotion_map = {"Neutral": 'NEU', "Joy": 'HAP', "Sadness": 'SAD', "Anger": 'ANG', "Fear": 'FEA'}
+    # convert text into emotional audio
+    convert_text_to_audio_and_store(text=text,
+                                    output_file_path='tmp_app_xtts_audio.wav',
+                                    gender='female',
+                                    emotion=emotion_map[emotion])
+    # reduce noise from audio
+    emo_audio, sr = librosa.load('tmp_app_xtts_audio.wav', sr=16000)
+    denoised_audio = denoise_audio(emo_audio, sample_rate=sr)
+    # restore volume to match original audio
+    denoised_audio_restored = restore_volume(denoised_audio, reference=emo_audio, window_size=4096)
+    os.remove('tmp_app_xtts_audio.wav')
+    audio = denoised_audio_restored
+
+    play_audio()
+    pass
+
+
+def call_syn_method():
+    method = syn_method_selector.get()
+    if method == 'Acoustic Features':
+        synthesize()
+    elif method == 'Emotional XTTS-v2':
+        synthesize_xtts()
+    else:
+        return
+
 
 def gtts_to_audiosegment(audio):
     filename = 'audio_tmp' + '.wav'
@@ -94,12 +139,26 @@ if __name__ == "__main__":
     textfield.pack()
     checkbox = tk.Checkbutton(root, text="Extract Emotion Automatically", command=find_emotion)
     checkbox.pack()
-    combobox = ttk.Combobox(root, state="readonly", values=emotion_values)
-    combobox.pack()
+
+    emo_frame = tk.Frame(root)
+    emo_frame.pack()
+    combobox = ttk.Combobox(emo_frame, state="readonly", values=emotion_values)
+    combobox.pack(side='right', anchor='e', expand=True)
+    combobox.set('Neutral')
+    emotion_label = tk.Label(emo_frame, text='Emotion:')
+    emotion_label.pack(side='left', anchor='w', expand=True)
+
+    method_frame = tk.Frame(root)
+    method_frame.pack()
+    syn_method_selector = ttk.Combobox(method_frame, state="readonly", values=syn_methods)
+    syn_method_selector.pack(side='right', anchor='e', expand=True)
+    syn_method_selector.set('Acoustic Features')
+    method_label = tk.Label(method_frame, text='Method:')
+    method_label.pack(side='left', anchor='w', expand=True)
     label = tk.Label(root, text="")
     label.pack()
 
-    button = tk.Button(root, text="Synthesize", command=synthesize)
+    button = tk.Button(root, text="Synthesize", command=call_syn_method)
     button.pack()
 
     savebutton = tk.Button(root, text="Save to File", command=savetofile)

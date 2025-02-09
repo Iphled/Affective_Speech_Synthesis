@@ -12,7 +12,7 @@ def convert_text_to_audio_and_store(text, output_file_path, gender='female', emo
         return
 
     ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
-    AUDIO_DIR = ROOT_DIR.replace('\\Project\\cycleGAN_model', '') + '\\audio_files\\AudioWAV'
+    AUDIO_DIR = ROOT_DIR + '\\audio_files\\AudioWAV'        # dir for the crema-d dataset
     speaker_wav_dir = AUDIO_DIR + f'\\{speaker_id}_DFA_{emotion}_XX.wav'
 
     all_files = [AUDIO_DIR + '\\' + s for s in os.listdir(AUDIO_DIR)]
@@ -67,44 +67,44 @@ def benchmark_emotion_conversion():
     pass
 
 
-if __name__ == '__main__':
-    benchmark_emotion_conversion()
-    convert_text_to_audio_and_store(text="After all that happened, I can't imagine my life any other way.",
-                                    output_file_path='output_voice.wav', gender='female', emotion='ANG')
-
-    tts = TTS(model_name="tts_models/multilingual/multi-dataset/xtts_v2")  # XTTS v2
-
-    ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
-    AUDIO_DIR = ROOT_DIR.replace('\\Project\\cycleGAN_model', '') + '\\audio_files\\AudioWAV'
-    HAPPY_DIR = ROOT_DIR.replace('\\Project\\cycleGAN_model', '') + '\\happy_audios_generated'
-    GENERATED_DIR = ROOT_DIR.replace('\\Project\\cycleGAN_model', '') + '\\generated_audio_samples'
-
-    speaker_ids = {s.split('_')[0] for s in os.listdir(AUDIO_DIR)}
-    emotions = {s.split('_')[2] for s in os.listdir(AUDIO_DIR)}
-    sentences = {s.split('_')[1] for s in os.listdir(AUDIO_DIR)}
-    all_files = [AUDIO_DIR + '\\' + s for s in os.listdir(AUDIO_DIR)]
-
-    # test different speaks
-    # for speaker in speaker_ids:
-    #     sp_audio = AUDIO_DIR + f'\\{speaker}_DFA_HAP_XX.wav'
-    #     if sp_audio in all_files:
-    #         tts.tts_to_file(text="I am excited!", file_path=HAPPY_DIR + f"\\{speaker}_HAP.wav", speaker_wav=sp_audio,
-    #                         language='en')
-
-    # generate samples for selected speakers
-    female_speaker_id = 1028
-    male_speaker_id = 1080
-    for emotion in emotions:
-        female_speaker_wav = AUDIO_DIR + f'\\{female_speaker_id}_DFA_{emotion}_XX.wav'
-        if female_speaker_wav in all_files:
-            tts.tts_to_file(text="After all that happened, I can't imagine my life any other way.",
-                            file_path=GENERATED_DIR + f"\\FEMALE_{emotion}.wav", speaker_wav=female_speaker_wav,
-                            language='en')
-
-        male_speaker_wav = AUDIO_DIR + f'\\{male_speaker_id}_DFA_{emotion}_XX.wav'
-        if female_speaker_wav in all_files:
-            tts.tts_to_file(text="After all that happened, I can't imagine my life any other way.",
-                            file_path=GENERATED_DIR + f"\\MALE_{emotion}.wav", speaker_wav=male_speaker_wav,
-                            language='en')
-
-    pass
+# if __name__ == '__main__':
+#     # benchmark_emotion_conversion()
+#     convert_text_to_audio_and_store(text="After all that happened, I can't imagine my life any other way.",
+#                                     output_file_path='output_voice.wav', gender='female', emotion='SAD')
+#
+#     tts = TTS(model_name="tts_models/multilingual/multi-dataset/xtts_v2")  # XTTS v2
+#
+#     ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
+#     AUDIO_DIR = ROOT_DIR.replace('\\Project\\cycleGAN_model', '') + '\\audio_files\\AudioWAV'
+#     HAPPY_DIR = ROOT_DIR.replace('\\Project\\cycleGAN_model', '') + '\\happy_audios_generated'
+#     GENERATED_DIR = ROOT_DIR.replace('\\Project\\cycleGAN_model', '') + '\\generated_audio_samples'
+#
+#     speaker_ids = {s.split('_')[0] for s in os.listdir(AUDIO_DIR)}
+#     emotions = {s.split('_')[2] for s in os.listdir(AUDIO_DIR)}
+#     sentences = {s.split('_')[1] for s in os.listdir(AUDIO_DIR)}
+#     all_files = [AUDIO_DIR + '\\' + s for s in os.listdir(AUDIO_DIR)]
+#
+#     # test different speaks
+#     # for speaker in speaker_ids:
+#     #     sp_audio = AUDIO_DIR + f'\\{speaker}_DFA_HAP_XX.wav'
+#     #     if sp_audio in all_files:
+#     #         tts.tts_to_file(text="I am excited!", file_path=HAPPY_DIR + f"\\{speaker}_HAP.wav", speaker_wav=sp_audio,
+#     #                         language='en')
+#
+#     # generate samples for selected speakers
+#     female_speaker_id = 1028
+#     male_speaker_id = 1080
+#     for emotion in emotions:
+#         female_speaker_wav = AUDIO_DIR + f'\\{female_speaker_id}_DFA_{emotion}_XX.wav'
+#         if female_speaker_wav in all_files:
+#             tts.tts_to_file(text="After all that happened, I can't imagine my life any other way.",
+#                             file_path=GENERATED_DIR + f"\\FEMALE_{emotion}.wav", speaker_wav=female_speaker_wav,
+#                             language='en')
+#
+#         male_speaker_wav = AUDIO_DIR + f'\\{male_speaker_id}_DFA_{emotion}_XX.wav'
+#         if female_speaker_wav in all_files:
+#             tts.tts_to_file(text="After all that happened, I can't imagine my life any other way.",
+#                             file_path=GENERATED_DIR + f"\\MALE_{emotion}.wav", speaker_wav=male_speaker_wav,
+#                             language='en')
+#
+#     pass
