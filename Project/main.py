@@ -14,7 +14,7 @@ from Project.Audio_to_Values import audio_to_volume_over_time, audio_to_pitch_ov
 from Project.Emotion_extraction import extract_from_text, index_from_emotion
 from Project.Text_to_speech import text_to_speech
 from Project.write_back_audio import write_back_audio, writeback_happy, writeback_sad, writeback_angry, \
-    writeback_fearful
+    writeback_fearful, overlay_emotion
 
 emotion = "neutral"
 emotion_values = ("Neutral", "Joy", "Sadness", "Anger", "Fear")
@@ -28,14 +28,7 @@ def synthesize():
     audio = text_to_speech(text)
     filename,audio,length=gtts_to_audiosegment(audio)
     if emotion!="Neutral" and audio is not None:
-        if emotion=="Joy":
-            audio=writeback_happy(audio,length)
-        if emotion=="Sadness":
-            audio=writeback_sad(audio,length)
-        if emotion=="Anger":
-            audio=writeback_angry(audio,length)
-        if emotion=="Fear":
-            audio=writeback_fearful(audio,length)
+        audio=overlay_emotion(audio, length, emotion)
         os.remove(filename)
 
     play_audio()

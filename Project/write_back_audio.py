@@ -54,7 +54,6 @@ def change_loudness(audio,start,end,emphasis,median,shaky):
             audio=librosa.effects.deemphasis(audio)
         elif emphasis>1:
             audio=librosa.effects.preemphasis(audio)
-            audio = librosa.effects.preemphasis(audio)
 
     return audio
 
@@ -68,7 +67,7 @@ def input_pause(y,sr,median,pause):
         second.append(np.abs(y[s:s + sr]).mean())
     second.sort()
     median=second[len(second)//2]
-    segments=librosa.effects.split(y,top_db=10, ref=np.max)
+    segments=librosa.effects.split(y,top_db=8, ref=np.max)
     segm=[]
     max=0
     for segment in segments:
@@ -166,16 +165,25 @@ def write_back_audio(time,volume,pitch,audio,length,pause=0,emphasis=1,shaky=Fal
 #final.export("final.wav", format="wav")
 
 def writeback_sad(audio,length):
-    return write_back_audio([0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.4, 0.4], [2, 2, 2, 1.5, 1, 0.7, 0.2],
-                             [0.5, 0.5, 0.5, 0.1, -1, -2, -2, -2], audio, length, emphasis=0.5)
+    return write_back_audio([0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5], [2, 2,2, 2, 1.5, 1],
+                             [0, 0,0, 0, 0, -1, -2], audio, length)
 
 def writeback_happy(audio,length):
-    return write_back_audio([1,1,1,1.1,1.1,1.2,1.2,1.2],[1,1,1,1.7,2,2,1.5],[2,2,0,0.3,1,4,6,6],audio,length)
+    return write_back_audio([1,1,1.1,1.1,1.2,1.2],[1,1,1.3,1.5,1.6],[0,0,0.3,1,1.5,2.5],audio,length)
 
 def writeback_angry(audio,length):
-    return write_back_audio([0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8], [5, 5, 5, 4, 3, 3, 2], [-1, 0, 0, 0.3, 0.7, 1, 2, 3],
-                     audio, length, emphasis=1.4, pause=1)
+    return write_back_audio([1,1,1,1,0.8,0.8,1,1],[5,5,5,2,5,5,5],[2,2,2,2,2,2,2,2],audio,length,emphasis=1.5)
 
 def writeback_fearful(audio,length):
-    final = write_back_audio([1, 1, 1, 1, 0.8, 0.8, 1, 1], [5, 5, 5, 2, 5, 5, 5], [2, 2, 2, 2, 2, 3, 3, 3], audio,
-                             length, emphasis=1.5)
+    return write_back_audio([0.8,0.8,0.8,0.8,0.8,0.8,1,1],[1,1,1,0.9,0.8,0.7,0.6],[2,2,2,2,2,2,2,2],audio,length,emphasis=1.5)
+
+def overlay_emotion(audio,length,emotion):
+    if emotion == "Joy":
+        audio = writeback_happy(audio, length)
+    if emotion == "Sadness":
+        audio = writeback_sad(audio, length)
+    if emotion == "Anger":
+        audio = writeback_angry(audio, length)
+    if emotion == "Fear":
+        audio = writeback_fearful(audio, length)
+    return audio
