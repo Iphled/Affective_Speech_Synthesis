@@ -105,7 +105,7 @@ Another distinguisher is made by the type of data that is available for the trai
 \caption{The two most prevalent GAN approaches as depicted by \cite{triantafyllopoulos_overview_2023}}
 \end{figure}
 
-A common method for emotional speech synthesis on parallel data are so-called GANs. They consist of two neuronal networks, the generator and the discriminator. The generator is given a sentence with a specific emotion that it needs to transform into another emotion. After this task is done, the transformed sentence is given to the discriminator which also receives a naturally spoken sentence with the same emotion. The task of the discriminator is to distinguish between the naturally spoken and the generates sentence. In the learning process, generator and discriminator continuously improve themselves. Improvements of this method are the CycleGAN, where two GANs translate between two different emotions such that the first GAN takes one emotion and transforms it into another emotion, and the second GAN takes this so generated emotion and transforms it back into the first emotion, and StarGAN where generator and discriminator are trained to work on multiple domains.
+A common method for emotional speech synthesis on parallel data are so-called GANs \cite{goodfellow2020generative}. They consist of two neuronal networks, the generator and the discriminator. The generator is given a sentence with a specific emotion that it needs to transform into another emotion. After this task is done, the transformed sentence is given to the discriminator which also receives a naturally spoken sentence with the same emotion. The task of the discriminator is to distinguish between the naturally spoken and the generates sentence. In the learning process, generator and discriminator continuously improve themselves. Improvements of this method are the CycleGAN-VC \cite{kaneko2018cyclegan}, where two GANs translate between two different emotions such that the first GAN takes one emotion and transforms it into another emotion, and the second GAN takes this so generated emotion and transforms it back into the first emotion, and StarGAN-VC \cite{kameoka2018stargan} where generator and discriminator are trained to work on multiple domains.
 
 In order to work on non-parallel data, the disentanglement method comes into use. The influences on the voice are thereby split into the content, the emotion, and the speaker. Then different encoders are used to represent those influences.
 Other demands of an affective speech synthesizer are that it controls the intensity of the emotion and that it allows a mixed emotion, for example a transition between sad and happy as it often happens in the mood swing of children. All in all, the synthesizers come to an accuracy of 50-80\% in studies. But their performance greatly depends on the environment, number and kind of emotions, language, culture, acceptance of user input and the resistance against noise \cite{triantafyllopoulos_overview_2023}.
@@ -123,8 +123,6 @@ Our second comparison is to a novel approach by \cite{diatlova_emospeech_2023}. 
 In our first approach we used XTTS-v2, a TTS model developed by \cite{casanova2024xtts} from Coqui capable of synthesizing speech with controllable speaker identity. By providing the model model with a audio reference containing a emotional speaker characteristic, we were able to create an audio from a given text, which also contains the emotion of the speaker. \\
 Instead of using a reference audio for emotion transfer, EmoSpeech utilizes explicit emotional embeddings that are trained on the emotion-labeled Emotional Speech Database (ESD) \cite{zhou2022emotional}. Unlike our first approach that uses XTTS-v2, which can generalize to new speakers and emotions dynamically, EmoSpeech is limited to the speakers and emotion categories present in its training data. Additionally, this allows XTTS-v2 to adopt new emotions with a short reference sample, while EmoSpeech requires further training on a dataset including this emotion.   
 \\
-
-\todo{Vergleich zu Hannes' Ansatz}
 
 The reason for the choice of these two papers is that one of them is a deep dive into the history of ETTS and the other one is a modern method using current deep learning technology. Above all that, they use similar human-based evaluation techniques that can be combined and compared to our approaches.
 
@@ -150,7 +148,8 @@ The second dataset is \cite{cao_data}, a dataset of 7,442 audio recordings taken
 In order to use emotions that both datasets know, we create the intersection of the emotions: Joy (happiness), sadness, anger, and fear. Additionally, we add a neutral category.
 \subsection{Text-To-Speech}
 Text-to-speech (TTS) deals with the problem of converting normal language text into spoken words mostly in the form of an audio signal. 
-In the current development environment, there are multiple advanced TTS libraries like Tacotron2 by \cite{shen_natural_2018} from NVIDIA, Google text-to-speech (Gtts) \cite{gtts} or Azure AI speech of Microsoft. For simplicity reasons, we decided to use Gtts. Initially Gtts used a concatenative and parametric speech synthesis. In later versions it utilized WaveNet, a deep generative model developed by \citeauthor{van2016wavenet} from DeepMind which is able to directly generate raw audio wave forms from given text.
+In the current development environment, there are multiple advanced TTS libraries like Tacotron2 by \cite{shen_natural_2018} from NVIDIA, Google text-to-speech (Gtts) \cite{gtts} or Azure AI Speech\footnote{\url{https://azure.microsoft.com/en-us/products/ai-services/ai-speech/}} of Microsoft. For simplicity reasons, we decided to use Gtts. Initially Gtts used a concatenative and parametric speech synthesis. In later versions it utilized WaveNet, a deep generative model developed by \citeauthor{van2016wavenet} from DeepMind which is able to directly generate raw audio wave forms from given text.
+
 \subsection{Emotion Recognition}
 
 The second ground stone of the information extraction is the emotion recognition. I used the Emotion English DistilRoBERTa-base\cite{hartmann2022emotionenglish}, which is trained to recognize six emotions: joy, sadness, anger, disgust, surprise and fear. The model performs well on the testing set in that it classifies 92\% of the emotions correctly. Only 19\% of the mismatched information are classified into the two emotion categories, that are not part of the input for our model. As for disgust we deal with it by classifying it as the most likely other known class, which is anger (87\%). Surprise is more differenciated, therefore it is evaluated further by enhancing the sentences with the allowed emotions and giving it to the model again. If the model recognizes another emotion, this one is prefered, otherwise the sentence is given a neutral co-notation. This improves the misinterpretation of surprise up to 73\%.
@@ -170,28 +169,25 @@ where $E$ is the emotion recognition algorithm, $s$ is the sentence model is the
 This procedure pushes up the classification accuracy to 93\%.
 
 \subsection{Approach 1 - Hannes}
-Our first approach is about using recent deep learning methods to generate an emotional audio. 
- 
-...\\
-We carried out two experiments:
+Our first approach is about using recent deep learning methods to generate an emotional audio. \\
+Therefore we carried out two experiments:
 \begin{enumerate}
 	\item \label{Experiment 1} Training a transformer based model on prediction the emotional audio from a neutral one.
 	\item \label{Experiment 2} Using the TTS model XTTS-v2 by \cite{casanova2024xtts} and its voice cloning ability to mimic not only the speaker but also its emotion.
 \end{enumerate}
-...\\
+
 \subsubsection{Neutral-To-Emotional Transformer}
 Most state of the art TTS models like FastSpeech2 \cite{ren2020fastspeech} EmoSpeech \cite{diatlova_emospeech_2023} which is build upon FastSpeech2 rely on transformers alongside with attention. Therefore with our \hyperref[Experiment 1]{first experiment} we tried to build a transformer based model for affective speech synthesis. The main idea is to train one model for each of the emotions: anger, sadness, happiness, fear and disgust. \\
 The raw audio waves need to be pre-processed. First the audio waves from the previously mentioned emotion-labeled CREMA-D dataset \cite{cao_data} which contain full sentences for each sample are cropped into into smaller equal-length parts using a sliding window. This not only increases the total number of samples the model can train on, it also ensures they all have the same length. Second each audio crop is converted into one Mel scale spectrograms. It is created by applying the Short-Time Fourier Transform (STFT) to the an audio waveform and mapping the frequencies to the Mel scale using a filter bank. The result is a time-frequency representation where intensity indicates amplitude \cite{allen1977short}. \\
 Our model, which consists of a transformer encoder and decoder, while training takes the Mel spectrogram of a neutral audio as input and the Mel spectrogram of the target emotion. It is important the speaker and the crop position in the audio are equal for input and target. A mean squared error (MSE) loss is used to compare the generated spectrogram with the target spectrogram. \\
-The neutral audio wave, which is used for generating the emotional audio is created with gtts \cite{gtts}, a TTS model from Google. While inference the model segment-vise predicts the Mel spectrogram of the target emotion from a neutral one. The so predicted emotional Mel spectrogram needs to be converted back into one audio waveform. This is done by the Griffin-Lim Algorithm by \cite{griffin1984lim}, a phase reconstruction method based on the redundancy of the STFT.     
+The neutral audio wave, which is used for generating the emotional audio is created with gtts \cite{gtts}, a TTS model from Google. While inference the model segment-vise predicts the Mel spectrogram of the target emotion from a neutral one. The so predicted emotional Mel spectrogram needs to be converted back into one audio waveform. This is done by the Griffin-Lim Algorithm by \cite{griffin1984lim}, a phase reconstruction method based on the redundancy of the STFT. The gained audio waves should now represent the target emotion and text.
+%Even though the and order is similar to models like FastSpeech, the results where not so promising. 
 
-...
 \subsubsection{Emotion Insertion using XTTS-v2}
 In our \hyperref[Experiment 2]{second experiment} we use a more direct approach for generating emotional audio. To achieve this we used the XTTS-v2 model \cite{casanova2024xtts}, a TTS model which is also capable of cloning the voice of a reference speaker. \\
-The model consists of multiple components. A pre-trained GPT-2 transformer model \cite{radford2019language} at its core for predicting audio tokens from text tokens generated by a pre-trained Vector Quantised-Variational Autoencoder (VQ-VAE) \cite{betker2023better, NIPS2017_7a98af17}. A speaker and emotion conditioning module that extracts prosody, rhythm, pitch, and timbre features from the Mel spectrogram of a given reference audio. These extracted features guide the GPT-2 decoder in generating a Mel spectrogram that preserves the speaker characteristics of the reference. Finally the HiFi-GAN \cite{kong2020hifi} vocoder transforms the Mel spectrogram into a audio waveform. The so generated audio contains the given text sounding like the speaker from the reference audio. \\
+The model consists of multiple components. A pre-trained GPT-2 transformer model \cite{radford2019language} at its core for predicting audio tokens from text tokens generated by a pre-trained Vector Quantised-Variational Autoencoder (VQ-VAE) \cite{betker2023better, NIPS2017_7a98af17}. A speaker and emotion conditioning module that extracts prosody, rhythm, pitch, and timbre features from the Mel spectrogram of a given reference audio. These extracted features guide the GPT-2 decoder in generating a Mel spectrogram that preserves the speaker characteristics of the reference. Finally the HiFi-GAN \cite{kong2020hifi} vocoder transforms the Mel spectrogram into a audio waveform. The so generated audio contains the given text sounding like the speaker from the reference audio. \\ 
+We used this model to generate an emotional-sounding audio. To achieve this, the reference audio needs to contain the target emotion so the model can extract its characteristic. As source of our reference audio samples the emotion-labeled CREMA-D \cite{cao_data} dataset is used. From this dataset two speakers were selected, one female and one male. Important was that both speakers must have a clear recording of their voice with an expressive emotion. Dependent on the target emotion, a reference with one of the emotions anger, sadness, happiness, fear and disgust is selected from the dataset. Because the output audio of the XTTS-v2 model often contains background noise, a denoiser is applied. One negative side effect of denoising is that the volume is unevenly reduced. To rectify this, we segment-vise readjusted the volume of the audio before denoising, by comparing the peaks of each segment.
 
-
-\todo{Hannes' Ansatz}
 \subsection{Approach 2}
 
 Before we start out with the explaination of the simplified method, we should answer the question whether a simplification should be considered. The advantage of this methodology is its possibility to break down the problem into descriptive subproblems, which can be evaluated and optimized separately. It therefore increases the trustworthyness which is a general problem in the deep learning era.
@@ -220,11 +216,11 @@ In order to implement a usable synthesizer, I created a GUI application. It cons
 
 \begin{figure}[h]
  \centering
-\includegraphics[width=0.4\textwidth]{"Bilder/GUI.png"}
+\includegraphics[width=0.4\textwidth]{"Bilder/gui_v2.png"}
 \caption{GUI of the implementation}
 \end{figure}
 
-The sentence is then synthesized using the procedure in Figure \ref{Ablauf}. The complication is here to choose suitable python libraries to create and transform the audio clip. Google text-to-speech saves its output in a designated gtts class which has no options for transformation but can only be saved. In contrast, to get attributes like the volume or pitch of the audio or split it in segments, it needs to be transformed into another format. For volume and splitting, it suffices, to parse the audio into the AudioSegment format. Because the pitch is a complex attribute and not directly visible within the wave form of a audio, it needs more advanced functions, which can be found in the Librosia library. The same is to be said for stretching an audio, since a simple time stretch would not only change the length of the audio but also its frequencies and therefore the pitch.
+The sentence is then synthesized using the procedure in Figure \ref{Ablauf}. Therefore two methods are available select in the application which represent our two approach. The complication is here to choose suitable python libraries to create and transform the audio clip. Google text-to-speech \cite{gtts} saves its output in a designated gtts class which has no options for transformation but can only be saved. In contrast, to get attributes like the volume or pitch of the audio or split it in segments, it needs to be transformed into another format. For volume and splitting, it suffices, to parse the audio into the AudioSegment format. Because the pitch is a complex attribute and not directly visible within the wave form of a audio, it needs more advanced functions, which can be found in the Librosa library \cite{McFee2015librosaAA}. The same is to be said for stretching an audio, since a simple time stretch would not only change the length of the audio but also its frequencies and therefore the pitch.
 Finally, the audio clip is ready. It is replayed and can be saved to a file.
 
 \section{Evaluation}
@@ -260,15 +256,15 @@ The sentences are then interlaced with the four emotions anger, happiness, sadne
 \end{tabular}
 }
 
-\caption{Comparison between the quantitative evaluations of \cite{cahn_generation_2000}, \cite{diatlova_emospeech_2023} and our approaches (in percent).}
+\caption{Comparison between the quantitative evaluations of the Affect Editor \cite{cahn_generation_2000}, EmoSpeech \cite{diatlova_emospeech_2023} and our approaches (in percent).}
 \label{Tabelle}
 \end{table*}
 \todo{Werte zu Tabelle hinzufügen}
 In this section, we will use our benchmark to compare our approaches. We will also compare our outcomes to each other and to two approaches of other researchers, that were already described in Section \ref{competing_approaches}. You can refer to Table \ref{Tabelle} for the full benchmark data and similar data of the compared papers.
 
-The metric of the comparison is a problem in itself, as ETTS has no uniform evaluation method or a benchmark. A common method of evaluation is to let people listen to the audios and then sort them according to the emotion they mean to hear. This is the method that is also used in our two reference papers. But the type and complexity of the sentences used is not given and metrices like clearity are not considered, so the comparison is rudimentary. This can also be seen in that the Affect Editor and EmoSpeech show comparable results despite their difference in up-to-dateness. Therefore, the evaluation has to be taken with a grain of salt.
+The metric of the comparison is a problem in itself, as ETTS has no uniform evaluation method or a benchmark. A common method of evaluation is to let people listen to the audios and then sort them according to the emotion they mean to hear. This is the method that is also used in our two reference papers. But the type and complexity of the sentences used is not given and metrices like clearity are not considered, so the comparison is rudimentary. This can also be seen in that the Affect Editor \cite{cahn_generation_2000} and EmoSpeech \cite{diatlova_emospeech_2023} show comparable results despite their difference in up-to-dateness. Therefore, the evaluation has to be taken with a grain of salt.
 
-The algorithms can have two sources of error. The first one lies in the emotion recognition. Based on the \cite{saravia-etal-2018-carer} dataset we can say, that the accuracy of this part lies at 93\%. The second risk of failure lies in the embedding of the emotion into the audio. Here our two approaches differ.
+The algorithms can have two sources of error. The first one lies in the emotion recognition. Based on the CARER dataset \cite{saravia-etal-2018-carer} we can say, that the accuracy of this part lies at 93\%. The second risk of failure lies in the embedding of the emotion into the audio. Here our two approaches differ.
 
 \todo{Evaluation Approach 1}
 
