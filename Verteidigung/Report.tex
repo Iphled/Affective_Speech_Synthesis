@@ -32,7 +32,7 @@
 \author{Hannes Bachmann\\
   4847472\\
   INF BAS \\
-  \texttt{\small hannes.bachmann@mailbox.tu-online.de}
+  \texttt{\small hannes.bachmann@mailbox.tu-dresden.de}
   \\ \And
   Julia Rennert \\
   4924490\\
@@ -172,20 +172,24 @@ This procedure pushes up the classification accuracy to 93\%.
 \subsection{Approach 1 - Hannes}
 Our first approach is about using recent deep learning methods to generate an emotional audio. 
  
-...
-We carried out two experiments: \\
-1. Training a transformer based model on prediction the emotional audio from a neutral one. \\
-2. Using the TTS model XTTS-v2 by \cite{casanova2024xtts} and its voice cloning ability to mimic not only the speaker but also its emotion.\\
-...
-\subsubsection{Neutral-to-Emotional Transformer}
-Most state of the art TTS models like FastSpeech2 \cite{ren2020fastspeech} EmoSpeech \cite{diatlova_emospeech_2023} which is build upon FastSpeech2 rely on transformers alongside with attention. Therefore with our first Experiment we tried to build a transformer based model for affective speech synthesis. The main idea is to train one model for each of the emotions: anger, sadness, happiness, fear and disgust. \\
-The raw audio waves need to be pre-processed. First the audio waves from the previously mentioned emotion-labeled CREMA-D dataset \cite{cao_data} which contain full sentences for each sample are cropped into into smaller equal-length parts using a sliding window. This not only increases the total number of samples the model can train on, it also ensures they all have the same length. Second each audio crop is converted into one Mel scale spectrograms. It is created by applying the Short-Time Fourier Transform (STFT) to the an audio waveform and mapping the frequencies to the Mel scale using a filter bank. The result is a time-frequency representation where intensity indicates amplitude. \\
+...\\
+We carried out two experiments:
+\begin{enumerate}
+	\item \label{Experiment 1} Training a transformer based model on prediction the emotional audio from a neutral one.
+	\item \label{Experiment 2} Using the TTS model XTTS-v2 by \cite{casanova2024xtts} and its voice cloning ability to mimic not only the speaker but also its emotion.
+\end{enumerate}
+...\\
+\subsubsection{Neutral-To-Emotional Transformer}
+Most state of the art TTS models like FastSpeech2 \cite{ren2020fastspeech} EmoSpeech \cite{diatlova_emospeech_2023} which is build upon FastSpeech2 rely on transformers alongside with attention. Therefore with our \hyperref[Experiment 1]{first experiment} we tried to build a transformer based model for affective speech synthesis. The main idea is to train one model for each of the emotions: anger, sadness, happiness, fear and disgust. \\
+The raw audio waves need to be pre-processed. First the audio waves from the previously mentioned emotion-labeled CREMA-D dataset \cite{cao_data} which contain full sentences for each sample are cropped into into smaller equal-length parts using a sliding window. This not only increases the total number of samples the model can train on, it also ensures they all have the same length. Second each audio crop is converted into one Mel scale spectrograms. It is created by applying the Short-Time Fourier Transform (STFT) to the an audio waveform and mapping the frequencies to the Mel scale using a filter bank. The result is a time-frequency representation where intensity indicates amplitude \cite{allen1977short}. \\
 Our model, which consists of a transformer encoder and decoder, while training takes the Mel spectrogram of a neutral audio as input and the Mel spectrogram of the target emotion. It is important the speaker and the crop position in the audio are equal for input and target. A mean squared error (MSE) loss is used to compare the generated spectrogram with the target spectrogram. \\
-While inference the model segment-vise predicts the Mel spectrogram of the target emotion from a neutral one. The so predicted emotional Mel spectrogram needs to be converted back into one audio waveform. This is done by the Griffin-Lim Algorithm by \cite{griffin1984lim} . A phase reconstruction method based on the redundancy of the STFT.     
+The neutral audio wave, which is used for generating the emotional audio is created with gtts \cite{gtts}, a TTS model from Google. While inference the model segment-vise predicts the Mel spectrogram of the target emotion from a neutral one. The so predicted emotional Mel spectrogram needs to be converted back into one audio waveform. This is done by the Griffin-Lim Algorithm by \cite{griffin1984lim}, a phase reconstruction method based on the redundancy of the STFT.     
 
 ...
 \subsubsection{Emotion Insertion using XTTS-v2}
-...
+In our \hyperref[Experiment 2]{second experiment} we use a more direct approach for generating emotional audio. To achieve this we used the XTTS-v2 model \cite{casanova2024xtts}, a TTS model which is also capable of cloning the voice of a reference speaker. \\
+The model consists of multiple components. A pre-trained GPT-2 transformer model \cite{radford2019language} at its core for predicting audio tokens from text tokens generated by a pre-trained Vector Quantised-Variational Autoencoder (VQ-VAE) \cite{betker2023better, NIPS2017_7a98af17}. A speaker and emotion conditioning module that extracts prosody, rhythm, pitch, and timbre features from the Mel spectrogram of a given reference audio. These extracted features guide the GPT-2 decoder in generating a Mel spectrogram that preserves the speaker characteristics of the reference. Finally the HiFi-GAN \cite{kong2020hifi} vocoder transforms the Mel spectrogram into a audio waveform. The so generated audio contains the given text sounding like the speaker from the reference audio. \\
+
 
 \todo{Hannes' Ansatz}
 \subsection{Approach 2}
