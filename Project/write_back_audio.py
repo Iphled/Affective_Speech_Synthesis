@@ -158,9 +158,24 @@ def write_back_audio(time,volume,pitch,audio,length,pause=0,emphasis=1,shaky=Fal
     audio=combine_audio(parts)
     return audio
 
-rate, data = read("data/1002_IEO_NEU_XX.wav")
-audio = AudioSegment.from_file('data/1002_IEO_NEU_XX.wav', 'r')
+#rate, data = read("data/1002_IEO_NEU_XX.wav")
+#audio = AudioSegment.from_file('data/1002_IEO_NEU_XX.wav', 'r')
 
-length = data.shape[0] / rate
-final=write_back_audio([1.2,0.8,1.2],[3,0.5],[2,1,6],audio,length,pause=1,shaky=True)
-final.export("final.wav", format="wav")
+#length = data.shape[0] / rate
+#final=write_back_audio([1.2,0.8,1.2],[3,0.5],[2,1,6],audio,length,pause=1,shaky=True)
+#final.export("final.wav", format="wav")
+
+def writeback_sad(audio,length):
+    return write_back_audio([0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.4, 0.4], [2, 2, 2, 1.5, 1, 0.7, 0.2],
+                             [0.5, 0.5, 0.5, 0.1, -1, -2, -2, -2], audio, length, emphasis=0.5)
+
+def writeback_happy(audio,length):
+    return write_back_audio([1,1,1,1.1,1.1,1.2,1.2,1.2],[1,1,1,1.7,2,2,1.5],[2,2,0,0.3,1,4,6,6],audio,length)
+
+def writeback_angry(audio,length):
+    return write_back_audio([0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8], [5, 5, 5, 4, 3, 3, 2], [-1, 0, 0, 0.3, 0.7, 1, 2, 3],
+                     audio, length, emphasis=1.4, pause=1)
+
+def writeback_fearful(audio,length):
+    final = write_back_audio([1, 1, 1, 1, 0.8, 0.8, 1, 1], [5, 5, 5, 2, 5, 5, 5], [2, 2, 2, 2, 2, 3, 3, 3], audio,
+                             length, emphasis=1.5)

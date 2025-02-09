@@ -9,12 +9,12 @@ from pydub.utils import make_chunks
 from scipy.io.wavfile import read
 
 from Project.Audio_to_Values import audio_to_volume_over_time, audio_to_pitch_over_time
-from Project.DL_querying import execute
 # from skimage.morphology.misc import funcs
 
 from Project.Emotion_extraction import extract_from_text, index_from_emotion
 from Project.Text_to_speech import text_to_speech
-from Project.write_back_audio import write_back_audio
+from Project.write_back_audio import write_back_audio, writeback_happy, writeback_sad, writeback_angry, \
+    writeback_fearful
 
 emotion = "neutral"
 emotion_values = ("Neutral", "Joy", "Sadness", "Anger", "Fear")
@@ -26,12 +26,16 @@ def synthesize():
     text = textvar.get()
     emotion = combobox.get()
     audio = text_to_speech(text)
-    filename,audio=gtts_to_audiosegment(audio)
+    filename,audio,length=gtts_to_audiosegment(audio)
     if emotion is not "Neutral" and audio is not None:
-        level,length = audio_to_volume_over_time(filename,True)
-        pitch=audio_to_pitch_over_time(filename)
-        time,volume,pitch=execute(level,pitch,emotion)
-        audio=write_back_audio(time,volume,pitch,audio,length)
+        if emotion=="Joy":
+            audio=writeback_happy(audio,length)
+        if emotion=="Sadness":
+            audio=writeback_sad(audio,length)
+        if emotion=="Anger":
+            audio=writeback_angry(audio,length)
+        if emotion=="Fear":
+            audio=writeback_fearful(audio,length)
         os.remove(filename)
 
     play_audio()
@@ -46,7 +50,7 @@ def gtts_to_audiosegment(audio):
     rate, data = read(filename)
     length = data.shape[0] / rate
     os.remove(filename2)
-    return filename,sound
+    return filename,sound,length
 
 
 def play_audio():
