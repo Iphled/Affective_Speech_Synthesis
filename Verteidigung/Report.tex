@@ -13,7 +13,7 @@
 \usepackage{microtype}
 %\usepackage{inconsolata}
 \usepackage{hyperref}
-\usepackage[demo]{graphicx}
+\usepackage{graphicx}
 \usepackage{todonotes}
 \usepackage{amsmath}
 \usepackage{algorithm}
@@ -266,7 +266,7 @@ The sentences are then interlaced with the four emotions anger, happiness, sadne
 \end{tabular}
 }
 
-\caption{Comparison between the quantitative evaluations of the Affect Editor \cite{cahn_generation_2000}, EmoSpeech \cite{diatlova_emospeech_2023} and our approaches (in percent).}
+\caption{Comparison between the quantitative evaluations of the Affect Editor \cite{cahn_generation_2000}, EmoSpeech \cite{diatlova_emospeech_2023} and our approaches (in percent). Our approaches used the above described benchmark.}
 \label{Tabelle}
 \end{table*}
 \todo{Werte zu Tabelle hinzufügen}
@@ -294,47 +294,84 @@ The algorithms can have two sources of error. The first one lies in the emotion 
 }
 
 \caption{Comparison of the simple and advanced benchmark sentences.}
-\label{Tabelle}
+\label{Tabelle2}
 \end{table}
 
-While approach 2 performs well in the quantitative analysis, it has the same qualitative problems that might compromise the affect editor. The emotion, while clearly embedded, tends to be comically emphasized, especially for the emotion fear.
+Approach 2 performs well in the quantitative analysis of Table \ref{Tabelle}, but not as good as \cite{cahn_generation_2000} on any of the comparable emotions. It also has the same qualitative problems that might compromise the affect editor. The emotion, while clearly embedded, tends to be comically emphasized, especially for the emotion sadness. It's also visible that fear is not displayed as well as other emotions.
 
-The approach also doesn't scale well for complex sentences that contain subsentences.
+The approach scales surprisingly well for complex sentences that contain subclauses, as seen in Tabelle \ref{Tabelle2}, even outperforming the easy benchmark in two of the categories. The same is not to be said for the quality of the emotional display, which gets even more distorted.
 
-\begin{figure}
-\begin{subfigure}{.15\textwidth}
-  \centering
-  \includegraphics[width=.8\linewidth]{"Bilder/Prozess.PNG"}
-  \label{fig:sfig1}
-\end{subfigure}%
-\begin{subfigure}{.15\textwidth}
-  \centering
-  \includegraphics[width=.8\linewidth]{Bilder/art_sad.png}
-  \label{fig:sfig2}
-\end{subfigure}
-\begin{subfigure}{.15\textwidth}
-  \centering
-  \includegraphics[width=.8\linewidth]{Bilder/art_sad.png}
-  \label{fig:sfig2}
-\end{subfigure}
-\begin{subfigure}{.15\textwidth}
-  \centering
-  \includegraphics[width=.8\linewidth]{Bilder/art_sad.png}
-  \label{fig:sfig2}
-\end{subfigure}
-\begin{subfigure}{.15\textwidth}
-  \centering
-  \includegraphics[width=.8\linewidth]{Bilder/art_sad.png}
-  \label{fig:sfig2}
-\end{subfigure}
-\caption{Neutral audio and the created emotional audios (left to right): sad, happy, angry, fearsome}
-\label{fig:fig}
-\end{figure}
 
 \section{Discussion}
 \label{discussion}
-Let's first discuss our outcome.
+Let's first discuss our outcomes.
+\todo{Aproach1 - discussion}
 
+
+As we could see in the evaluation of approach 2, fear is not displayed correctly, as its subtone could not be modelled by the chosen parameters. In contrast, the neutral emotion category has improved in comparison to the Affect Editor both for easy and complex sentences, which can be attributed to the improvement of general TTS. Another interesting fact is that when performing the transformations on naturally spoken sentences and generated sentences, the parameters had to be tuned differently. The spoken language had an even higher tendency to perform well with happiness and sadness, while anger wasn't displayed as well. The comparison can be seen in Figure \ref{fig:fig}. One can conclude that \cite{cahn_generation_2000} had to tune his Affect Editor differently than our approach.
+
+
+\begin{figure}
+\begin{subfigure}{.5\textwidth}
+\begin{subfigure}{.18\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{"Bilder/seminat_neutral.png"}
+  \label{fig:sfig1}
+\end{subfigure}%
+\begin{subfigure}{.18\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{Bilder/seminat_angry.png}
+  \label{fig:sfig2}
+\end{subfigure}
+\begin{subfigure}{.18\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{Bilder/seminat_happy.png}
+  \label{fig:sfig2}
+\end{subfigure}
+\begin{subfigure}{.18\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{Bilder/seminat_sad.png}
+  \label{fig:sfig2}
+\end{subfigure}
+\begin{subfigure}{.18\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{Bilder/seminat_fear.png}
+  \label{fig:sfig2}
+\end{subfigure}
+\caption{Transformation on natural utterance}
+\end{subfigure}
+
+\begin{subfigure}{.5\textwidth}
+\begin{subfigure}{.18\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{"Bilder/art_neutral.png"}
+  \label{fig:sfig1}
+\end{subfigure}%
+\begin{subfigure}{.18\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{Bilder/art_angry.png}
+  \label{fig:sfig2}
+\end{subfigure}
+\begin{subfigure}{.18\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{Bilder/art_happy.png}
+  \label{fig:sfig2}
+\end{subfigure}
+\begin{subfigure}{.18\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{Bilder/art_sad.png}
+  \label{fig:sfig2}
+\end{subfigure}
+\begin{subfigure}{.18\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{Bilder/art_fear.png}
+  \label{fig:sfig2}
+\end{subfigure}
+\caption{Transformation on artificial utterance}
+\end{subfigure}
+\caption{Neutral audio and the created emotional audios (left to right): neutral, angry, happy, sad, fearsome}
+\label{fig:fig}
+\end{figure}
 Another important question is the general ethicality of improving the human-likeliness of synthetized speech. On the one hand, it improves the quality of generated speech. This could be very beneficial for both barrier improvement for blind people as well as translations, commercials, and artists (for example the dubbing of indie computer games). On the other hand, it allows for more believable deep fakes. It also poses the ever-present question of which data can be used for deep learning training without violating copyright. In our case, the data was taken from an open training set, but the given sets are sparse and as in our case too small to get optimal results\cite{he_improve_2022}. The risk of taking the needed training data from sources of questionable copyright such as audio books and quality such as noisy videos.
 
 \section{Conclusion}
@@ -342,7 +379,7 @@ Another important question is the general ethicality of improving the human-like
 It wasn't to be expected that a simple course project can hold up to the current hights scientific research. Yet we could find similar trends in our experiments as in the respective fields of science, unifying them in a single benchmark. 
 
 But our approaches and benchmark are restricted to single sentence with a single emotion.
-As ETTS is constantly improving together with the advances in TTS, a more wholesome approach has to be taken eventually, where emotions are added with more subtlety and a mixture. This is the major field where ETTS needs to go.
+As ETTS is constantly improving together with the advances in TTS, a more wholesome approach has to be taken eventually, where emotions are added with more subtlety and a mixture. This is the major direction where ETTS needs to go.
 
 \section{Contribution Statement}
 Hannes Bachmann: Text-to-speech, Approach 1 (main approach)
