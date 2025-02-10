@@ -22,7 +22,7 @@ import re
 from Audio_to_Values import mp3_wav, audio_to_pitch_over_time, audio_to_volume_over_time
 
 
-# import soundfile as sf
+import soundfile as sf
 
 DEVICE = ('cuda' if torch.cuda.is_available() else 'cpu')
 
@@ -156,9 +156,6 @@ def train_model(model, optimizer, criterion, AUDIO_DIR, n_epochs=100):
                 total_loss_count += 1
             # print(f"Training Loss: {total_loss}")
         print(f'Epoch Loss: {epoch_loss / total_loss_count}')
-        # Todo 1: augment to generate even more pairs
-        # Todo 2: create batch for each neutral audio
-    # Todo 3: consider training one model per emotion as long as no additional target emotion tag is used ass input
     pass
 
 
