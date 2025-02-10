@@ -1,23 +1,11 @@
-from pydub import AudioSegment
-import playsound
-from scipy.io.wavfile import read
 from librosa import feature
 import librosa.display
-from dtw import dtw
-from scipy.spatial.distance import cdist
-from scipy.signal import find_peaks
 import torch
 from torch import nn
 import torch.optim as optim
 import os
 import librosa
 import librosa.display
-import numpy as np
-import matplotlib.pyplot as plt
-from matplotlib.patches import ConnectionPatch
-from librosa.effects import pitch_shift
-from librosa.feature import mfcc
-import re
 
 from Audio_to_Values import mp3_wav, audio_to_pitch_over_time, audio_to_volume_over_time
 
