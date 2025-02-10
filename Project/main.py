@@ -4,7 +4,7 @@ from tkinter import filedialog
 import os
 
 import librosa
-# from playsound import playsound
+import pyaudio
 from pydub import AudioSegment
 from pydub.playback import play
 from scipy.io.wavfile import read
