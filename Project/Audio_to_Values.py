@@ -2,11 +2,8 @@
 #Eingabe: Audio
 #Ausgabe: drei Graphen: Tempo, Lautstärke, Pitch
 import math
-
 from pydub import AudioSegment
 from scipy.io.wavfile import read
-from scipy.io import wavfile
-import matplotlib.pyplot as plt
 import librosa
 import numpy as np
 

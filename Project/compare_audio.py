@@ -1,5 +1,4 @@
 from pydub import AudioSegment
-import playsound
 from scipy.io.wavfile import read
 from librosa import feature
 import librosa.display

@@ -1,18 +1,9 @@
 import math
 import os
-import array
-
-import audiostretchy.stretch
 import librosa
 import numpy
 import numpy as np
 import pydub
-from cytoolz import remove
-from pydub import AudioSegment
-from pydub.utils import make_chunks
-from scipy.io.wavfile import read
-import  soundfile
-import wave
 
 
 def segment_audio(audio,num):

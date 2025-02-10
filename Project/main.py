@@ -1,21 +1,17 @@
-import random
-import time
 import tkinter as tk
-import wave
 from tkinter import ttk
 from tkinter import filedialog
 import os
 
 import librosa
-from playsound import playsound
+# from playsound import playsound
 from pydub import AudioSegment
-from pydub.utils import make_chunks
+from pydub.playback import play
 from scipy.io.wavfile import read
-import numpy as np
 import soundfile as sf
 
 from Project.Audio_to_Values import audio_to_volume_over_time, audio_to_pitch_over_time
-# from skimage.morphology.misc import funcs
+
 
 from Project.Emotion_extraction import extract_from_text, index_from_emotion
 from Project.Text_to_speech import text_to_speech
@@ -98,7 +94,7 @@ def play_audio():
             audio.export(filename, format="mp3")
         else:
             audio.save(filename)
-        playsound(filename, block=True)
+        play(audio)
         os.remove(filename)
 
 def savetofile():
