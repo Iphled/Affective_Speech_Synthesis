@@ -13,9 +13,13 @@
 \usepackage{microtype}
 %\usepackage{inconsolata}
 \usepackage{hyperref}
-\usepackage{graphicx}
+\usepackage[demo]{graphicx}
 \usepackage{todonotes}
 \usepackage{amsmath}
+\usepackage{algorithm}
+\usepackage{subcaption}
+\usepackage{algpseudocode}
+
 %\bibliographystyle{acl}
 
 
@@ -48,8 +52,8 @@
 \begin{document}
 \maketitle
 \begin{abstract}
-Speech synthesis has become a common tool over the past few decades. This opens up the questions whether the synthesized speech can be given a more life-like sounding, namely emotionalism, a problem that is accumulated in the field of affective speech synthesis (emotional text-to-speech). \\
-In our project, we compare modern technologies in emotion recognition and text-to-speech with common methodologies of acoustics and machine learning, using both to extract a sentence's prevalent emotion and transform it into emotional speech. We evaluate our methods in contrast to the common standard and find out whether our simplified approaches can compete.
+Speech synthesis has become a common tool over the past few decades. This opens up the questions whether the synthesized speech can be given a more life-like sounding, namely emotionalism, a problem that is accumulated in the field of affective speech synthesis. \\
+In our project, we compare modern technologies in emotion recognition and text-to-speech with common methodologies of acoustics, using both to extract a sentence's prevalent emotion and transform it into emotional speech. We also create a benchmark to evaluate our methods in contrast to the common solutions.
 \end{abstract}
 
 \section{Introduction}
@@ -62,9 +66,9 @@ how to give language a specific characteristic. To define this problem, the info
 the spoken word is divided into three areas. First, there is the content of the text, more or less
 a transcript of what is being said. Then there is the emotion that the speaker conveys through
 his voice. And thirdly, there is the identity of the speaker himself, which is also characterized by
-his voice. Affective Speech Synthesis refers to the change in emotion while the other two areas remain the static.
+his voice. Affective Speech Synthesis, also called emotional text-to-speech (ETTS), refers to the change in emotion while the other two areas remain the static.
 
-The most successful current approaches are based on deep learning\cite{triantafyllopoulos_overview_2023, cho_multi-speaker_2021, diatlova_emospeech_2023}. This warrants the question, whether a more traditional acousics-based approach can still compare to some extend. For this purpose, we tried to apply two competing approaches to the problem of emotional TTS, one up to the current deep learning methods, and one a mixture of acoustics and basic machine learning. 
+The most successful current approaches are based on deep learning\cite{triantafyllopoulos_overview_2023, cho_multi-speaker_2021, diatlova_emospeech_2023}. This warrants the question, whether a more traditional acousics-based approach can still compare to some extend. For this purpose, we tried to apply two competing approaches to the problem of emotional TTS, one up to the current deep learning methods, and one a deep dive in the waters of acoustics. Our second requirement is to create a general benchmark as the evaluation of ETTS is still not standardised.
 
 In Section \ref{related_work}, we will discuss the basics of (affective) speech synthesis and the current research. Our own methodologies will be introduced in Section \ref{methodology}. Then we evaluate the methods in  Section \ref{evaluation} by comparing the outcomes to each other and two approaches of previous research, where one of them is a current deep learning approach and one a more traditional statistical method. We discuss the outcome in Section \ref{discussion} and summarize our findings in Section \ref{conclusion}.
 
@@ -115,14 +119,11 @@ Other demands of an affective speech synthesizer are that it controls the intens
 \label{competing_approaches}
 We will now take a look on some research in higher detail as to use it for the later evaluation. 
 
-Our first comparison is to the Affect Editor of \cite{cahn_generation_2000}. As written in the previous section, Cahn's editor can be called the first real emotional TTS synthesizer. It encodes the emotion with the use of an acoustic model, where parameters encode important values like pitch, timing, voice quality and articulation. The inputs are an utterance and an emotion. After an initial acoustic analysis, the utterance is supplied with fitting pauses, hesitation and pitch to convey the emotion.
-
-In comparison to Cahn's method, our simple approach uses a similar idea in terms of finding appropriate values to the most important acoustic values such as pitch, volume and timing. In contrast to the previously described method, the parameters are evaluated using machine learning instead of acoustic background knowledge. Thus, the primary contribution of the approach 2 is to search for a middle-way between acoustic knowledge and machine learning.
-
+Our first comparison is to the Affect Editor of \cite{cahn_generation_2000}. As written in the previous section, Cahn's editor can be called the first real emotional TTS synthesizer. It encodes the emotion with the use of an acoustic model, where parameters encode important values like pitch, timing, voice quality and articulation. The inputs are an utterance and an emotion. After an initial acoustic analysis, the utterance is supplied with fitting pauses, hesitation and pitch to convey the emotion. \\
+In comparison to Cahn's method, our simple approach uses a similar idea in terms of finding appropriate values to the most important acoustic features such as pitch, volume and timing. In contrast to the previously described method, the creation of the TTS audio is based on a state-of-the-art model and the transformation is simplified.\\
 Our second comparison is to a novel approach by \cite{diatlova_emospeech_2023}. Based on the FastSpeech2 TTS architecture \cite{ren2020fastspeech}, they constructed their emotional TTS (EmoSpeech) model. FastSpeech2 is an encoder-decoder architecture which uses a feed-forward transformer block, a stack of multihead self-attention layers and 1D-convolution. With the use of embedding tables and FastSpeech2's eGeMAPS predictor, emotion is then projected on FastSpeech2's output on an utterance level. \\
 In our first approach we used XTTS-v2, a TTS model developed by \cite{casanova2024xtts} from Coqui capable of synthesizing speech with controllable speaker identity. By providing the model model with a audio reference containing a emotional speaker characteristic, we were able to create an audio from a given text, which also contains the emotion of the speaker. \\
 Instead of using a reference audio for emotion transfer, EmoSpeech utilizes explicit emotional embeddings that are trained on the emotion-labeled Emotional Speech Database (ESD) \cite{zhou2022emotional}. Unlike our first approach that uses XTTS-v2, which can generalize to new speakers and emotions dynamically, EmoSpeech is limited to the speakers and emotion categories present in its training data. Additionally, this allows XTTS-v2 to adopt new emotions with a short reference sample, while EmoSpeech requires further training on a dataset including this emotion.   
-\\
 
 The reason for the choice of these two papers is that one of them is a deep dive into the history of ETTS and the other one is a modern method using current deep learning technology. Above all that, they use similar human-based evaluation techniques that can be combined and compared to our approaches.
 
@@ -168,7 +169,7 @@ E(s)=\begin{cases}
 where $E$ is the emotion recognition algorithm, $s$ is the sentence model is the output of the Emotion English DistilRoBERTa-base, and $emo_i$ is a list of all allowed emotions integrated into the sentence "I am very *." in different variations.
 This procedure pushes up the classification accuracy to 93\%.
 
-\subsection{Approach 1 - Hannes}
+\subsection{Approach 1}
 Our first approach is about using recent deep learning methods to generate an emotional audio. \\
 Therefore we carried out two experiments:
 \begin{enumerate}
@@ -190,24 +191,33 @@ We used this model to generate an emotional-sounding audio. To achieve this, the
 
 \subsection{Approach 2}
 
-Before we start out with the explaination of the simplified method, we should answer the question whether a simplification should be considered. The advantage of this methodology is its possibility to break down the problem into descriptive subproblems, which can be evaluated and optimized separately. It therefore increases the trustworthyness which is a general problem in the deep learning era.
-
-
-\subsubsection{Embedding the Emotion into the Audio}
-
-The sound of our speech is deeply correlated with acoustic effects which themselves stem from the mouth movement and form\cite{arias_beyond_2020}. 
+The sound of our speech is deeply correlated with acoustic effects which themselves stem from the mouth movement and form\cite{arias_beyond_2020}. It is therefore evident that by manipulating the acoustic characteristics, an emotion can be convayed.
 
 The following transformations are implemented and can be applied to transform the audio:
-\begin{itemize}
-\item partwise stretching
-\item partwise volume change
-\item partwise pitch change
-\item emphasis/de-emphasis
-\item pauses
-\item
-\end{itemize}
+Partwise stretching, partwise volume change, partwise pitch change, emphasis/de-emphasis, pauses. The characteristics of acousic, especially the logarithmic attributes of volume, are heeded whenever it doesn't impact the computation time and quality.
+In total, the algorithm looks as can be seen in Algorithm \ref{alg:cap}.
 
-Sadness is the easiest do encode as it has a distinct
+
+\begin{algorithm}
+\caption{write\_audio (audio, stretching\_list, volume\_list, pitch\_list, pause, emphasis)}\label{alg:cap}
+\begin{algorithmic}
+\State $audio \gets librosa.trim(audio)$
+\If{$pause !=0$}
+	\State $audio  \gets  add\_pause(audio,pause)$
+\EndIf
+\State $parts \gets segment(audio,len(stretching\_list))$
+\For{$\textit{i,part in parts}$}
+\State $temp  \gets  stretch(part, stretching\_list[i])$ 
+\State $temp \gets volume (temp, volume[i-1], volume[i], emphasis)$
+\State $temp \gets pitch (temp, pitch\_list[i])$
+\State $parts[i] \gets temp$
+\EndFor
+\State $\gets combine(parts)$
+\end{algorithmic}
+\end{algorithm}
+
+
+Sadness can be displayed by slowing down the whole audio and letting the volume and pitch drop down in the end of the sentence. Happiness in contrast can be included by increasing pitch and volume at the end. Finally, anger and fear can be symbolized by increasing the emphasis on each syllable. Fear also needs a distinct subtone that we tried to apply via vibrations and noise, but that still needs improvement.
 
 
 \subsection{Implementation}
@@ -246,7 +256,7 @@ The sentences are then interlaced with the four emotions anger, happiness, sadne
 \hline
 \cellcolor{gainsboro}Approach 1&&&&&&-&-\\
 \hline
-\cellcolor{gainsboro}Approach 2&&&&&&-&-\\
+\cellcolor{gainsboro}Approach 2&87.5&45.8&50&62.5&16.7&-&-\\
 \hline
 \hline
 \cellcolor{gainsboro}Affect Editor& -&65.5&83.2&97.1&72.7&72.7&80.7\\
@@ -267,10 +277,60 @@ The metric of the comparison is a problem in itself, as ETTS has no uniform eval
 The algorithms can have two sources of error. The first one lies in the emotion recognition. Based on the CARER dataset \cite{saravia-etal-2018-carer} we can say, that the accuracy of this part lies at 93\%. The second risk of failure lies in the embedding of the emotion into the audio. Here our two approaches differ.
 
 \todo{Evaluation Approach 1}
+\begin{table}[h]
+
+\small
+\vspace{5px}
+{
+\begin{tabular}{|l|l|l|l|l|l|}
+\hline
+\rowcolor{mintgreen}&neutral&angry&happy&sad&fearsome\\
+\hline
+\cellcolor{gainsboro}easy&83.3&58.3&58.3&53.3&33.3\\
+\hline
+\cellcolor{gainsboro}advanced&91.7&33.3&41.7&66.6&0\\
+\hline
+\end{tabular}
+}
+
+\caption{Comparison of the simple and advanced benchmark sentences.}
+\label{Tabelle}
+\end{table}
 
 While approach 2 performs well in the quantitative analysis, it has the same qualitative problems that might compromise the affect editor. The emotion, while clearly embedded, tends to be comically emphasized, especially for the emotion fear.
 
 The approach also doesn't scale well for complex sentences that contain subsentences.
+
+\begin{figure}
+\begin{subfigure}{.15\textwidth}
+  \centering
+  \includegraphics[width=.8\linewidth]{"Bilder/Prozess.PNG"}
+  \label{fig:sfig1}
+\end{subfigure}%
+\begin{subfigure}{.15\textwidth}
+  \centering
+  \includegraphics[width=.8\linewidth]{Bilder/art_sad.png}
+  \label{fig:sfig2}
+\end{subfigure}
+\begin{subfigure}{.15\textwidth}
+  \centering
+  \includegraphics[width=.8\linewidth]{Bilder/art_sad.png}
+  \label{fig:sfig2}
+\end{subfigure}
+\begin{subfigure}{.15\textwidth}
+  \centering
+  \includegraphics[width=.8\linewidth]{Bilder/art_sad.png}
+  \label{fig:sfig2}
+\end{subfigure}
+\begin{subfigure}{.15\textwidth}
+  \centering
+  \includegraphics[width=.8\linewidth]{Bilder/art_sad.png}
+  \label{fig:sfig2}
+\end{subfigure}
+\caption{Neutral audio and the created emotional audios (left to right): sad, happy, angry, fearsome}
+\label{fig:fig}
+\end{figure}
+
 \section{Discussion}
 \label{discussion}
 Let's first discuss our outcome.
@@ -279,24 +339,18 @@ Another important question is the general ethicality of improving the human-like
 
 \section{Conclusion}
 \label{conclusion}
-It wasn't to be expected that a simple course project can hold up to the current hights scientific research.
+It wasn't to be expected that a simple course project can hold up to the current hights scientific research. Yet we could find similar trends in our experiments as in the respective fields of science, unifying them in a single benchmark. 
 
-Generally, Emotional TTS is constantly improving together with the advances in TTS. To name some fields that still warrant improvement, the evaluation of affective speech synthesizers is mostly still human-based and benchmarks don't exist yet. Finally, while single emotions can be embedded, a more differentiated mixture of maybe even conflicting emotions is not yet researched.
+But our approaches and benchmark are restricted to single sentence with a single emotion.
+As ETTS is constantly improving together with the advances in TTS, a more wholesome approach has to be taken eventually, where emotions are added with more subtlety and a mixture. This is the major field where ETTS needs to go.
 
-\section{Contribution statement}
-Hannes Bachmann:
-\begin{itemize}
-\item text-to-speech
-\item Approach 1 (main approach)
-\end{itemize}
-Julia Rennert:
-\begin{itemize}
-\item emotion recognition
-\item Approach 2
-\item find datasets, write "related work", benchmark
-\end{itemize}
+\section{Contribution Statement}
+Hannes Bachmann: Text-to-speech, Approach 1 (main approach)
+
+Julia Rennert: Emotion recognition, Approach 2, find datasets, write "related work", benchmark
 
 \section{Link to the Repository}
+{\small\url{https://github.com/Iphled/Affective\_Speech\_Synthesis}}
 
 Please note that the data is not in the repository as the audio files are too big. To test out the algorithms that require the audios, please download them from the dataset source described above, and add them to the project in a "data" folder.
 
@@ -313,9 +367,6 @@ Please note that the data is not in the repository as the audio files are too bi
 \bibliography{NLP}
 Instructions: 
 \begin{enumerate}
-
-
-    \item ``Methodology'' lays out your technical approach, high-level, as well in technical detail. Subsections are highly recommended here (and also elsewhere).
     \item ``Evaluation'' should contain both a quantitative and a qualitative evaluation of your results. If in doubt about metrics and evaluation methodologies, talk to us.
     \item ``Discussion'' on the one hand builds upon the evaluation, and should critically discuss strengths and weaknesses of your solution, and possible ways to improve it further. On the other hand, it should discuss relevant ethical questions related to the problem and/or your solution at hand.
 \end{enumerate}
