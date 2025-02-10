@@ -267,10 +267,9 @@ The sentences are then interlaced with the four emotions anger, happiness, sadne
 }
 
 \caption{Comparison between the quantitative evaluations of the Affect Editor \cite{cahn_generation_2000}, EmoSpeech \cite{diatlova_emospeech_2023} and our approaches (in percent). Our approaches used the above described benchmark.}
-\label{Tabelle}
+\label{Tabelle2}
 \end{table*}
-\todo{Werte zu Tabelle hinzufügen}
-In this section, we will use our benchmark to compare our approaches. We will also compare our outcomes to each other and to two approaches of other researchers, that were already described in Section \ref{competing_approaches}. You can refer to Table \ref{Tabelle} for the full benchmark data and similar data of the compared papers.
+In this section, we will use our benchmark to compare our approaches. We will also compare our outcomes to each other and to two approaches of other researchers, that were already described in Section \ref{competing_approaches}. You can refer to Table \ref{Tabelle2} for the full benchmark data and similar data of the compared papers.
 
 The metric of the comparison is a problem in itself, as ETTS has no uniform evaluation method or a benchmark. A common method of evaluation is to let people listen to the audios and then sort them according to the emotion they mean to hear. This is the method that is also used in our two reference papers. But the type and complexity of the sentences used is not given and metrics like clarity are not considered, so the comparison is rudimentary. This can also be seen in that the Affect Editor \cite{cahn_generation_2000} and EmoSpeech \cite{diatlova_emospeech_2023} show comparable results despite their difference in up-to-dateness. Therefore, the evaluation has to be taken with a grain of salt.
 
@@ -293,9 +292,10 @@ The algorithms can have two sources of error. The first one lies in the emotion 
 }
 
 \caption{Comparison of the simple and advanced benchmark sentences for approach 1 (in percent).}
-\label{Tabelle2}
+\label{Tabelle3}
 \end{table}
-\todo{Evaluation Approach 1}
+When comparing the results of approach 1 on the easy and advanced benchmark sentences as seen in Table \ref{Tabelle3} it can be shown that happiness and sadness can be separated well, while disgust and fear are hard to not good represented. This might be because the  emotional expression for happy and sad are much stronger than for fear and disgust or anger. Another possible reason could be that while evaluation it is hard for a human listener to distinguish between e.g. anger and disgust. Also the approach works better with longer or more advances sentences. \\   
+For the used evaluation metric, approach 1 is worse than EmoSpeech \cite{diatlova_emospeech_2023} in every emotion category except neutral, where it is slightly better (see Table \ref{Tabelle2}). It is worth mentioning that EmoSpeech uses less in number but more distinctive emotions than our approach, which makes it easier to distinguish the individual ones. 
 
 \begin{table}[h]
 
@@ -314,19 +314,20 @@ The algorithms can have two sources of error. The first one lies in the emotion 
 }
 
 \caption{Comparison of the simple and advanced benchmark sentences for approach 2 (in percent).}
-\label{Tabelle3}
+\label{Tabelle4}
 \end{table}
 
-Approach 2 performs well in the quantitative analysis of Table \ref{Tabelle}, but not as good as \cite{cahn_generation_2000} on any of the comparable emotions. It also has the same qualitative problems that might compromise the affect editor. The emotion, while clearly embedded, tends to be comically emphasized, especially for the emotion sadness. It's also visible that fear is not displayed as well as other emotions.
+Approach 2 performs well in the quantitative analysis of Table \ref{Tabelle2}, but not as good as \cite{cahn_generation_2000} on any of the comparable emotions. It also has the same qualitative problems that might compromise the affect editor. The emotion, while clearly embedded, tends to be comically emphasized, especially for the emotion sadness. It's also visible that fear is not displayed as well as other emotions.
 
-The approach scales surprisingly well for complex sentences that contain subclauses, as seen in Table \ref{Tabelle3}, even outperforming the easy benchmark in two of the categories. The same is not to be said for the quality of the emotional display, which gets even more distorted.
+The approach scales surprisingly well for complex sentences that contain subclauses, as seen in Table \ref{Tabelle4}, even outperforming the easy benchmark in two of the categories. The same is not to be said for the quality of the emotional display, which gets even more distorted.
 
 
 \section{Discussion}
 \label{discussion}
 Let's first discuss our outcomes.
 \todo{Aproach1 - discussion}
-
+We compared two transformer based approaches, the \hyperref[Experiment 2]{second experiment} of our approach 1 against the EmoSpeech model \cite{diatlova_emospeech_2023}. By comparing just the raw benchmark scores, EmoSpeech performs way better than our approach of using XTTS-v2 \cite{casanova2024xtts} with an additional emotional audio as reference. Besides this performance difference, our approach has a advantage. While EmoSpeech can only handle emotions that occurred in the training dataset, which limits the number of possible emotions that can be represented by the model, our approach can adopt on the nearly every emotion of the reference audio. That also makes XTTS-v2 and so our approach more flexible since it does not need to be trained again on a new emotion. \\
+Over all both models have its benefits, but when it comes to generating a audio with an emotion of a fixed set of emotions the EmoSpeech model performs best.
 
 As we could see in the evaluation of approach 2, fear is not displayed correctly, as its subtone could not be modeled by the chosen parameters. In contrast, the neutral emotion category has improved in comparison to the Affect Editor both for easy and complex sentences, which can be attributed to the improvement of general TTS. Another interesting fact is that when performing the transformations on naturally spoken sentences and generated sentences, the parameters had to be tuned differently. The spoken language had an even higher tendency to perform well with happiness and sadness, while anger wasn't displayed as well. The comparison can be seen in Figure \ref{fig:fig}. One can conclude that \cite{cahn_generation_2000} had to tune his Affect Editor differently than our approach.
 
