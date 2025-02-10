@@ -68,7 +68,7 @@ a transcript of what is being said. Then there is the emotion that the speaker c
 his voice. And thirdly, there is the identity of the speaker himself, which is also characterized by
 his voice. Affective Speech Synthesis, also called emotional text-to-speech (ETTS), refers to the change in emotion while the other two areas remain the static.
 
-The most successful current approaches are based on deep learning\cite{triantafyllopoulos_overview_2023, cho_multi-speaker_2021, diatlova_emospeech_2023}. This warrants the question, whether a more traditional acoustic-based approach can still compare to some extend. For this purpose, we tried to apply two competing approaches to the problem of emotional TTS, one up to the current deep learning methods, and one a deep dive in the waters of acoustics. Our second requirement is to create a general benchmark as the evaluation of ETTS is still not standardized.
+The most successful current approaches are based on deep learning\cite{triantafyllopoulos_overview_2023, cho_multi-speaker_2021, diatlova_emospeech_2023}. This warrants the question, whether a more traditional acoustic-based approach can still compare to some extend. For this purpose, we tried to apply two competing approaches to the problem of ETTS, one up to the current deep learning methods, and one a deep dive in the waters of acoustics. Our second requirement is to create a general benchmark as the evaluation of ETTS is still not standardized.
 
 In Section \ref{related_work}, we will discuss the basics of (affective) speech synthesis and the current research. Our own methodologies will be introduced in Section \ref{methodology}. Then we evaluate the methods in  Section \ref{evaluation} by comparing the outcomes to each other and two approaches of previous research, where one of them is a current deep learning approach and one a more traditional statistical method. We discuss the outcome in Section \ref{discussion} and summarize our findings in Section \ref{conclusion}.
 
@@ -217,7 +217,7 @@ In total, the algorithm looks as can be seen in Algorithm \ref{alg:cap}.
 \end{algorithm}
 
 
-Sadness can be displayed by slowing down the whole audio and letting the volume and pitch drop down in the end of the sentence. Happiness in contrast can be included by increasing pitch and volume at the end. Finally, anger and fear can be symbolized by increasing the emphasis on each syllable. Fear also needs a distinct subtone that we tried to apply via vibrations and noise, but that still needs improvement.
+Sadness can be displayed by slowing down the whole audio and letting the volume and pitch drop down in the end of the sentence. Happiness in contrast can be included by increasing pitch and volume at the end. Finally, anger and fear can be symbolized by increasing the emphasis on each syllable. Fear also needs a distinct harmonic that we tried to apply via vibrations and noise, but that still needs improvement.
 
 
 \subsection{Implementation}
@@ -230,7 +230,7 @@ In order to implement a usable synthesizer, I created a GUI application. It cons
 \caption{GUI of the implementation}
 \end{figure}
 
-The sentence is then synthesized using the procedure in Figure \ref{Ablauf}. Therefore two methods are available select in the application which represent our two approach. The complication is here to choose suitable python libraries to create and transform the audio clip. Google text-to-speech \cite{gtts} saves its output in a designated gtts class which has no options for transformation but can only be saved. In contrast, to get attributes like the volume or pitch of the audio or split it in segments, it needs to be transformed into another format. For volume and splitting, it suffices, to parse the audio into the AudioSegment format. Because the pitch is a complex attribute and not directly visible within the wave form of a audio, it needs more advanced functions, which can be found in the Librosa library \cite{McFee2015librosaAA}. The same is to be said for stretching an audio, since a simple time stretch would not only change the length of the audio but also its frequencies and therefore the pitch.
+The sentence is then synthesized using the procedure in Figure \ref{Ablauf}. Therefore two methods are available select in the application which represent our two approach. The complication is here to choose suitable python libraries to create and transform the audio clip. Google text-to-speech \cite{gtts} saves its output in a designated gtts class which has no options for transformation but can only be saved. In contrast, to get attributes like the volume or pitch of the audio or split it in segments, it needs to be transformed into another format. For simple transformations, it suffices to parse the audio into the AudioSegment format. Because the pitch is a complex attribute and not directly visible within the wave form of a audio, it needs more advanced functions, which can be found in the Librosa library \cite{McFee2015librosaAA}. The same is to be said for stretching an audio, since a simple time stretch would not only change the length of the audio but also its frequencies and therefore the pitch.
 Finally, the audio clip is ready. It is replayed and can be saved to a file.
 
 \section{Evaluation}
@@ -317,19 +317,19 @@ For the used evaluation metric, approach 1 is worse than EmoSpeech \cite{diatlov
 \label{Tabelle4}
 \end{table}
 
-Approach 2 performs well in the quantitative analysis of Table \ref{Tabelle2}, but not as good as \cite{cahn_generation_2000} on any of the comparable emotions. It also has the same qualitative problems that might compromise the affect editor. The emotion, while clearly embedded, tends to be comically emphasized, especially for the emotion sadness. It's also visible that fear is not displayed as well as other emotions.
+Approach 2 performs well in the quantitative analysis of Table \ref{Tabelle2}, but not as good as \cite{cahn_generation_2000} on any of the comparable emotions. It also has the same qualitative problems that might compromise the Affect Editor. The emotion, while clearly embedded, tends to be comically emphasized, especially in the case of sadness. It's also visible that fear is not displayed as well as other emotions. Neutral emotions on the other hand, are directly transported from the TTS and therefore well represented.
 
 The approach scales surprisingly well for complex sentences that contain subclauses, as seen in Table \ref{Tabelle4}, even outperforming the easy benchmark in two of the categories. The same is not to be said for the quality of the emotional display, which gets even more distorted.
 
+If set into relation, one can say that our approaches generally perform less well than those described in the two scientific papers. Nonetheless, the tendencies are similar. Both approaches have strengths and weaknesses in different areas but are comparable in the mean precision, which is 47.9 \% for approach 1 and 51.7 \% for approach 2.
 
 \section{Discussion}
 \label{discussion}
 Let's first discuss our outcomes.
-\todo{Aproach1 - discussion}
 We compared two transformer based approaches, the \hyperref[Experiment 2]{second experiment} of our approach 1 against the EmoSpeech model \cite{diatlova_emospeech_2023}. By comparing just the raw benchmark scores, EmoSpeech performs way better than our approach of using XTTS-v2 \cite{casanova2024xtts} with an additional emotional audio as reference. Besides this performance difference, our approach has a advantage. While EmoSpeech can only handle emotions that occurred in the training dataset, which limits the number of possible emotions that can be represented by the model, our approach can adopt on the nearly every emotion of the reference audio. That also makes XTTS-v2 and so our approach more flexible since it does not need to be trained again on a new emotion. \\
 Over all both models have its benefits, but when it comes to generating a audio with an emotion of a fixed set of emotions the EmoSpeech model performs best.
 
-As we could see in the evaluation of approach 2, fear is not displayed correctly, as its subtone could not be modeled by the chosen parameters. In contrast, the neutral emotion category has improved in comparison to the Affect Editor both for easy and complex sentences, which can be attributed to the improvement of general TTS. Another interesting fact is that when performing the transformations on naturally spoken sentences and generated sentences, the parameters had to be tuned differently. The spoken language had an even higher tendency to perform well with happiness and sadness, while anger wasn't displayed as well. The comparison can be seen in Figure \ref{fig:fig}. One can conclude that \cite{cahn_generation_2000} had to tune his Affect Editor differently than our approach.
+As for approach 2, we could see in the evaluation that fear is not displayed correctly, as its harmonies could not be modeled by the chosen parameters. In contrast, the neutral emotion category has improved in comparison to the Affect Editor both for easy and complex sentences, which can be attributed to the improvement of general TTS. Another interesting fact is that when performing the transformations on naturally spoken sentences and generated sentences, the parameters had to be tuned differently. The spoken language had an even higher tendency to perform well with happiness and sadness, while anger wasn't displayed as well. The comparison can be seen in Figure \ref{fig:fig}. One can conclude that \cite{cahn_generation_2000} had to tune his Affect Editor differently than our approach.
 
 In general, our acoustics approach is less good than the Affect Editor, as it is programmed in a shorter time and less flexible. Changes that would influence the algorithm to the better is to vary the number and length of the chunks. This could be done by use of the Librosa split function or a mapping of words to the audio. Additionally, a shivering sound is needed for the fear emotion. Finally, the transformation should be adapted to the length of the sentence and ideally consider subclauses.
 
@@ -395,13 +395,15 @@ In general, our acoustics approach is less good than the Affect Editor, as it is
 \caption{Neutral audio and the created emotional audios (left to right): neutral, angry, happy, sad, fearsome}
 \label{fig:fig}
 \end{figure}
+While our benchmark provides a strong improvement on comparability in the ETTS area, it also has a disadvantage. The procedure of the study is not written out in high precision. This is a voluntary decision, because a extensive study is out of the scope of this project, but if it is applied to a more advanced research setting, it should be extended with a concrete study setting. Because we did the evaluation ourselves instead of conducting a complete study, the evaluation might contain biases since we already knew the intrinsics of the algorithms.
+
 Another important question is the general ethicality of improving the human-likeliness of synthesized speech. On the one hand, it improves the quality of generated speech. This could be very beneficial for both barrier improvement for blind people as well as translations, commercials, and artists (for example the dubbing of indie computer games). On the other hand, it allows for more believable deep fakes. It also poses the ever-present question of which data can be used for deep learning training without violating copyright. In our case, the data was taken from an open training set, but the given sets are sparse and as in our case too small to get optimal results\cite{he_improve_2022}. The risk of taking the needed training data from sources of questionable copyright such as audio books and quality such as noisy videos.
 
 \section{Conclusion}
 \label{conclusion}
 It wasn't to be expected that a simple course project can hold up to the current highs scientific research. Yet we could find similar trends in our experiments as in the respective fields of science, unifying them in a single benchmark.
 
-But our approaches and benchmark are restricted to single sentence with a single emotion.
+But our approaches and benchmark are restricted to single sentence with a single emotion albeit XTTS-v2 takes a step in the right direction of allowing arbitrary emotions.
 As ETTS is constantly improving together with the advances in TTS, a more wholesome approach has to be taken eventually, where emotions are added with more subtlety and a mixture. This is the major direction where ETTS needs to go.
 
 \section{Contribution Statement}
@@ -425,10 +427,6 @@ Please note that the data is not in the repository as the audio files are too bi
 
 %\bibliographystyle{acl}
 \bibliography{NLP}
-Instructions: 
-\begin{enumerate}
-    \item ``Evaluation'' should contain both a quantitative and a qualitative evaluation of your results. If in doubt about metrics and evaluation methodologies, talk to us.
-    \item ``Discussion'' on the one hand builds upon the evaluation, and should critically discuss strengths and weaknesses of your solution, and possible ways to improve it further. On the other hand, it should discuss relevant ethical questions related to the problem and/or your solution at hand.
-\end{enumerate}
+
 
 \end{document}
