@@ -1,3 +1,5 @@
+import random
+import time
 import tkinter as tk
 import wave
 from tkinter import ttk
@@ -9,6 +11,8 @@ from playsound import playsound
 from pydub import AudioSegment
 from pydub.utils import make_chunks
 from scipy.io.wavfile import read
+import numpy as np
+import soundfile as sf
 
 from Project.Audio_to_Values import audio_to_volume_over_time, audio_to_pitch_over_time
 # from skimage.morphology.misc import funcs
@@ -55,8 +59,9 @@ def synthesize_xtts():
     denoised_audio = denoise_audio(emo_audio, sample_rate=sr)
     # restore volume to match original audio
     denoised_audio_restored = restore_volume(denoised_audio, reference=emo_audio, window_size=4096)
+    sf.write('tmp_app_xtts_audio.wav', denoised_audio_restored, 16000)
+    audio = AudioSegment.from_wav('tmp_app_xtts_audio.wav')
     os.remove('tmp_app_xtts_audio.wav')
-    audio = denoised_audio_restored
 
     play_audio()
     pass
@@ -93,7 +98,7 @@ def play_audio():
             audio.export(filename, format="mp3")
         else:
             audio.save(filename)
-        playsound(filename)
+        playsound(filename, block=True)
         os.remove(filename)
 
 def savetofile():
