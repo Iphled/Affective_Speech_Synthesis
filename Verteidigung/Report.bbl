@@ -1,0 +1,98 @@
+\begin{thebibliography}{12}
+\providecommand{\natexlab}[1]{#1}
+
+\bibitem[{Arias et~al.(2020)Arias, Rachman, Liuni, and
+  Aucouturier}]{arias_beyond_2020}
+Pablo Arias, Laura Rachman, Marco Liuni, and Jean-Julien Aucouturier. 2020.
+\newblock Beyond {Correlation}: {Acoustic} {Transformation} {Methods} for the
+  {Experimental} {Study} of {Emotional} {Voice} and {Speech}.
+
+\bibitem[{Bohra et~al.(2022)Bohra, Sethi, Nag, and Kanwal}]{bohra_smart_2022}
+Arushi Bohra, Laksh Sethi, Karthik Nag, and Preet Kanwal. 2022.
+\newblock \href {https://doi.org/10.1109/I2CT54291.2022.9825363} {Smart {Story}
+  {Telling} {Model} with {Emotion}-{Based} {Enunciation} and an {Interactive}
+  {Query} {Resolver}}.
+\newblock In \emph{2022 {IEEE} 7th {International} conference for {Convergence}
+  in {Technology} ({I2CT})}, pages 1--4, Mumbai, India. IEEE.
+
+\bibitem[{Cahn(2000)}]{cahn_generation_2000}
+Janet~E Cahn. 2000.
+\newblock The {Generation} of {A} ect in {Synthesized} {Speech}.
+
+\bibitem[{Cao et~al.(2014)Cao, Cooper, MK, RC, A, and R}]{cao_data}
+H~Cao, DG~Cooper, Keutmann MK, Gur RC, Nenkova A, and Verma R. 2014.
+\newblock \href {https://doi.org/10.1109/TAFFC.2014.2336244} {Crema-d:
+  Crowd-sourced emotional multimodal actors dataset}.
+\newblock In \emph{IEEE Trans Affect Comput}, pages 5(4):377--390. IEEE Trans
+  Affect Comput.
+
+\bibitem[{Cho and Lee(2021)}]{cho_multi-speaker_2021}
+Sungjae Cho and Soo-Young Lee. 2021.
+\newblock \href {https://doi.org/10.48550/arXiv.2112.03557} {Multi-speaker
+  {Emotional} {Text}-to-speech {Synthesizer}}.
+\newblock \emph{arXiv preprint}.
+\newblock ArXiv:2112.03557 [cs].
+
+\bibitem[{Diatlova and Shutov(2023)}]{diatlova_emospeech_2023}
+Daria Diatlova and Vitaly Shutov. 2023.
+\newblock \href {https://doi.org/10.48550/arXiv.2307.00024} {{EmoSpeech}:
+  {Guiding} {FastSpeech2} {Towards} {Emotional} {Text} to {Speech}}.
+\newblock \emph{arXiv preprint}.
+\newblock ArXiv:2307.00024 [eess].
+
+\bibitem[{Hartmann(2022)}]{hartmann2022emotionenglish}
+Jochen Hartmann. 2022.
+\newblock Emotion english distilroberta-base.
+\newblock
+  \url{https://huggingface.co/j-hartmann/emotion-english-distilroberta-base/}.
+
+\bibitem[{He et~al.(2022)He, Gong, Wang, Jin, Wang, Xu, and
+  Dang}]{he_improve_2022}
+Jiaxu He, Cheng Gong, Longbiao Wang, Di~Jin, Xiaobao Wang, Junhai Xu, and
+  Jianwu Dang. 2022.
+\newblock \href {https://doi.org/10.21437/Interspeech.2022-11336} {Improve
+  emotional speech synthesis quality by learning explicit and implicit
+  representations with semi-supervised training}.
+\newblock In \emph{Interspeech 2022}, pages 5538--5542. ISCA.
+
+\bibitem[{Pierre-Yves(2003)}]{pierre-yves_production_2003}
+Oudeyer Pierre-Yves. 2003.
+\newblock The production and recognition of emotions in speech: features and
+  algorithms.
+\newblock \emph{Computer Studies}.
+
+\bibitem[{Saravia et~al.(2018)Saravia, Liu, Huang, Wu, and
+  Chen}]{saravia-etal-2018-carer}
+Elvis Saravia, Hsien-Chi~Toby Liu, Yen-Hao Huang, Junlin Wu, and Yi-Shin Chen.
+  2018.
+\newblock \href {https://doi.org/10.18653/v1/D18-1404} {{CARER}: Contextualized
+  affect representations for emotion recognition}.
+\newblock In \emph{Proceedings of the 2018 Conference on Empirical Methods in
+  Natural Language Processing}, pages 3687--3697, Brussels, Belgium.
+  Association for Computational Linguistics.
+
+\bibitem[{Shen et~al.(2018)Shen, Pang, Weiss, Schuster, Jaitly, Yang, Chen,
+  Zhang, Wang, Skerry-Ryan, Saurous, Agiomyrgiannakis, and
+  Wu}]{shen_natural_2018}
+Jonathan Shen, Ruoming Pang, Ron~J. Weiss, Mike Schuster, Navdeep Jaitly,
+  Zongheng Yang, Zhifeng Chen, Yu~Zhang, Yuxuan Wang, R.~J. Skerry-Ryan, Rif~A.
+  Saurous, Yannis Agiomyrgiannakis, and Yonghui Wu. 2018.
+\newblock \href {https://doi.org/10.48550/arXiv.1712.05884} {Natural {TTS}
+  {Synthesis} by {Conditioning} {WaveNet} on {Mel} {Spectrogram}
+  {Predictions}}.
+\newblock \emph{arXiv preprint}.
+\newblock ArXiv:1712.05884 [cs].
+
+\bibitem[{Triantafyllopoulos et~al.(2023)Triantafyllopoulos, Schuller, İymen,
+  Sezgin, He, Yang, Tzirakis, Liu, Mertes, André, Fu, and
+  Tao}]{triantafyllopoulos_overview_2023}
+Andreas Triantafyllopoulos, Björn~W. Schuller, Gökçe İymen, Metin Sezgin,
+  Xiangheng He, Zijiang Yang, Panagiotis Tzirakis, Shuo Liu, Silvan Mertes,
+  Elisabeth André, Ruibo Fu, and Jianhua Tao. 2023.
+\newblock \href {https://doi.org/10.1109/JPROC.2023.3250266} {An {Overview} of
+  {Affective} {Speech} {Synthesis} and {Conversion} in the {Deep} {Learning}
+  {Era}}.
+\newblock \emph{Proceedings of the IEEE}, 111(10):1355--1381.
+\newblock ArXiv:2210.03538 [cs].
+
+\end{thebibliography}

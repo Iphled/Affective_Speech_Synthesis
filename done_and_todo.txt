@@ -1,0 +1,11 @@
+Done:
+- emotion extraction from text using BERT model
+- text to speech using gTTS
+
+Todo:
+- extract from audio: level and pitch							# Julia
+- compare neutral with emotional audio: speed, level and pitch				# Hannes
+- train model: 										# both
+-- input: neutral audio (level and pitch sequences), emotion label
+-- output: emotional audio (speed, level and pitch sequences)
+- apply transformation (using emotional speed, level and pitch) on neutral audio 	# both

@@ -24,7 +24,7 @@ LANG = args.language
 
 os.makedirs(f"{DIRECTORY}/Classification/tokenizer", exist_ok=True)
 
-dataset = pd.read_csv("data/BERT_training_data2.csv")
+dataset = pd.read_csv("../data/BERT_training_data2.csv")
 training_set = dataset[:int(len(dataset)/5*4)]
 test_set = dataset[int(len(dataset)/5*4):]
 
